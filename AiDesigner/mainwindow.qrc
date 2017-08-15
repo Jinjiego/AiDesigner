@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>Images/MessagestitlebarLeft.png</file>
+        <file>Images/ParameterListtitlebarLeft.png</file>
+        <file>Images/ProgresstitlebarLeft.png</file>
+        <file>Images/ProjecttitlebarLeft.png</file>
+        <file>Images/qt.png</file>
+        <file>Images/titlebarCenter.png</file>
+        <file>Images/titlebarLeft.png</file>
+        <file>Images/titlebarLeft1.png</file>
+        <file>Images/titlebarRight.png</file>
+        <file>Images/cut.png</file>
+        <file>Images/open.png</file>
+        <file>Images/paste.png</file>
+        <file>Images/save.png</file>
+        <file>Images/new.png</file>
+        <file>Images/folder_close.png</file>
+        <file>Images/folder_open.png</file>
+    </qresource>
+</RCC>
