@@ -80,7 +80,8 @@ class MainWindow : public QMainWindow
     ColorSwatch * MessagesDockWidget;
     ColorSwatch * ParameterListDockWidget;
     ColorSwatch * ProgressDockWidget;
-    QDockWidget *CentralDockWidget;
+
+    QDockWidget * CentralDockWidget;
     CentralShowTabWgt *CentralTabWidget;
 
 public:

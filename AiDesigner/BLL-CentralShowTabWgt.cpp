@@ -25,7 +25,39 @@ CentralShowTabWgt::CentralShowTabWgt()
 void CentralShowTabWgt:: CloseTab(int index){
       removeTab(index);
 
+
 }
+void CentralShowTabWgt::ShowData(QString fullpath,QString type){
+
+
+  if("Text"==type){
+       QMainWindow * aTab=new QMainWindow(this);
+       TabList.append(aTab);
+
+       TextDataWgt * TextTab= new TextDataWgt();
+
+       UtilReadTextFile reader;
+       QString Text;
+       reader.ReadTextFileFrom(fullpath,&Text);
+
+
+       cout<<"Got: "<<Text.toStdString()<<endl;
+
+       TextTab->setText( Text );
+       aTab->setCentralWidget(TextTab);
+       addTab(aTab ,"Text");
+       setCurrentWidget(aTab);
+
+
+
+  }else if("Table"==type){
+
+
+  }
+
+
+}
+
 
 
 

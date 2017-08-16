@@ -2,6 +2,7 @@
 #define BLLCENTRALSHOWTABWGT_H
 #include <QTabWidget>
 #include <QList>
+#include "BASE-Util.hpp"
 #include "BASE-Plot.h"
 #include "BASE-DataTableWgt.h"
 #include "BASE-TextDataWgt.h"
@@ -18,7 +19,7 @@ public:
     CentralShowTabWgt();
 protected:
 public slots:
-
+    void  ShowData(QString fullpath,QString type);
     void  CloseTab(int index);
 
 private:

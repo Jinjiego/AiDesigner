@@ -14,6 +14,10 @@ signals:
 
 public slots:
 
+     void RecvAMessage(QString message);
+private:
+     QListWidgetItem*MessageItem;
+
 };
 
 #endif // BLLMESGMANAGER_H

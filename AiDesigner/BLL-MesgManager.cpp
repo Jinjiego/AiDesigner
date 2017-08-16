@@ -3,9 +3,15 @@
 BLLMesgManager::BLLMesgManager(QWidget *parent,QString initMessage) :
     QListWidget(parent)
 {
-      QListWidgetItem*firstMessage=new QListWidgetItem(initMessage,this);
+      MessageItem=new QListWidgetItem(initMessage,this);
 
-      insertItem(1,firstMessage);
+      insertItem(1,MessageItem);
+
+
+}
+
+void  BLLMesgManager:: RecvAMessage(QString message){
+      addItem(message);
 
 
 }

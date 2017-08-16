@@ -15,7 +15,7 @@ class TextDataWgt : public QsciScintilla,QThread
 public:
     explicit TextDataWgt();
 
-    void wheelEvent(QWheelEvent *event);
+    void  wheelEvent(QWheelEvent *event);
     void  keyPressEvent(QKeyEvent *event);
     void  keyReleaseEvent(QKeyEvent *event);
 

@@ -6,16 +6,17 @@
 #include<QMessageBox>
 #include<QMenu>
 #include <QtEvents>
-#include<iostream>
+
 #include"BASE-Util.hpp"
 #include<QThread>
 
+#include<iostream>
 using namespace std;
 
 enum  myItemType {Node,Leaf} ;
 
 
-//**********************************************
+//****************redefined item type og the tree ****************************
 class TreeItem : public QTreeWidgetItem
 {
 
@@ -57,10 +58,12 @@ public:
     TreeItem * addChild(QTreeWidgetItem *parent,QString name,QIcon icon,myItemType type);
 
 signals:
+    void ShowDataRequest(QString fullpath,QString type) ;
 
 public slots:
 
-    void ProjectClicked(QTreeWidgetItem*,int);
+    void ItemClicked(QTreeWidgetItem*,int);
+    void ItemDoubleClicked(QTreeWidgetItem*,int);
     void AddaFolder();
     void AddCsv();
     void Rename();

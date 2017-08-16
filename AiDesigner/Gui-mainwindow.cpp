@@ -109,8 +109,11 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
 
     statusBar()->showMessage(tr("Ready"));
 
+    // while project tree asked to open a csv file
+    connect(ProjectTreeViewer,SIGNAL(ShowDataRequest(QString,QString) ),CentralTabWidget,SLOT( ShowData(QString,QString))  );
 
 }
+
 
 void MainWindow::actionTriggered(QAction *action)
 {

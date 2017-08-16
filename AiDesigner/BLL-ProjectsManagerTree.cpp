@@ -7,7 +7,7 @@ BLLProjectsManagerTree::BLLProjectsManagerTree(QWidget *parent) :
     QTreeWidget(parent)
 {
 
-    myProjectDir= "G:\\projects\\Qt\\AiProjects\\";
+    myProjectDir= "G:\\projects\\Qt\\AiProjects";
 
     setColumnCount(1);
     //setHeaderLabel(tr("Project Name"));
@@ -21,8 +21,8 @@ BLLProjectsManagerTree::BLLProjectsManagerTree(QWidget *parent) :
 
     addProject(QString("Project2"));
 
-    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(ProjectClicked(QTreeWidgetItem*,int)  ));
-
+    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(ItemClicked(QTreeWidgetItem *,int)  ));
+    connect(this,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),SLOT(ItemDoubleClicked(QTreeWidgetItem*,int) )  );
 
     //////start();
 
@@ -34,8 +34,6 @@ TreeItem * BLLProjectsManagerTree::addChild(QTreeWidgetItem *parent,QString name
        TreeItem * Child=new TreeItem(parent, QStringList(name),isLeaf);
        Child->setIcon(0,icon);
        Child->setExpanded(true);
-       Child->setFlags(Child->flags()| Qt::ItemIsEditable);
-
 
        parent->addChild(Child);
 
@@ -64,12 +62,30 @@ void  BLLProjectsManagerTree:: addProject(  QString ProjectName){
 
 }
 
-void  BLLProjectsManagerTree:: ProjectClicked(QTreeWidgetItem*item,int index){
+void  BLLProjectsManagerTree:: ItemClicked(QTreeWidgetItem*Item,int index){
+
+    TreeItem * item=(TreeItem*)Item;
 
     if( NULL==item->parent()  ){
-        // QMessageBox::information(NULL, QString("click Promote"  ), QString(item->text(index)  ));
+        //
          cout<< QString(item->text(index) ).toStdString()<<"\n";
+    }else if(item->NodeType==Leaf ){
+        //QMessageBox::information(NULL, QString("click Promote"  ), QString(item->text(index)  ));
+
+        cout<<item->NodeType<<endl;
+
     }
+
+}
+void BLLProjectsManagerTree:: ItemDoubleClicked(QTreeWidgetItem*Item,int index){
+
+    TreeItem * item=(TreeItem*)Item;
+    if(item->NodeType==Leaf ){
+
+         emit ShowDataRequest(myProjectDir+PathCur2Root( Item ),"Text" );
+
+    }
+
 
 }
 
@@ -90,6 +106,7 @@ void BLLProjectsManagerTree::contextMenuEvent(QContextMenuEvent *event){
 
 
         if( RightKeyClickedItem->parent() ==NULL){//if the selected item is Root
+
 
         }
         if (RightKeyClickedItem->NodeType==Node){
@@ -185,7 +202,8 @@ void  BLLProjectsManagerTree:: AddCsv(){
     TreeItem * file = addChild(seled,QString("NewTxt.csv"),QIcon(),Leaf);
 
     QFile newTxt(myProjectDir+PathCur2Root(file ));
-    cout<<QString(myProjectDir+PathCur2Root(file )).toStdString()<<endl;
+
+    cout<<"Create>>>" <<QString(myProjectDir+PathCur2Root(file )).toStdString()<<endl;
 
     newTxt.open(QFile::Append);
 
