@@ -5,9 +5,13 @@
 #include<QThread>
 #include<QTextStream>
 #include<QMessageBox>
-
+#include "baseWgt/BASE-Type.hpp"
 #include "baseWgt/BASE-TextDataWgt.h"
 #include "baseWgt/BASE-DataTableWgt.h"
+
+#define VNAME(varName)  (#varName)
+#define VNAME_D(varName)  QString::fromStdString(string(#varName).substr(15))
+
 
 bool inline CreateDir(QString fullPath){
     QDir dir(fullPath);
@@ -15,7 +19,6 @@ bool inline CreateDir(QString fullPath){
     else {
         dir.mkdir(fullPath);
         std:: cout<<"--->"<<fullPath.toStdString()<<"\n";
-
         return true;
     }
     return false;
@@ -112,7 +115,7 @@ public:
             if(task)
             {
                 cout<<"Thread is runing to open "<<fullPath.toStdString()<<endl;
-                (this->*task)  ();
+                (this->*task)  (); //运行任务
                 task=nullptr;
             }
 
@@ -128,14 +131,22 @@ class svmReportor:public QObject
 {
  Q_OBJECT
 signals:
-     void ShowMsgRequest(QString  Type,QString  message );
+     void ShowMsgRequest(AiMsg msg);
+     void ShowMsgRequest(QString type,QString message);
+
 public:
 
      svmReportor(){}
-     void svmSendMessage(QString  Type,QString  message)
+     void svmSendMessage(QString type,QString message)
    {
-       emit ShowMsgRequest(Type,message);
+          ShowMsgRequest(type, message);
    }
+     void svmSendMessage(AiMsg msg)
+   {
+           ShowMsgRequest(msg);
+           cout<<"fuck!"<<endl;
+   }
+
 };
 
 

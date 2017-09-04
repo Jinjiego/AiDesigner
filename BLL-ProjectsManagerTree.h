@@ -49,11 +49,14 @@ public:
      void  addProject(QString ProjectName);
 
     TreeItem * addChild(QTreeWidgetItem *parent,QString name,QIcon icon,myItemType type);
+     void getAllLeaf(TreeItem * activeProject,QStringList &path ,QStringList &Leaf);
 
 signals:
     void ShowDataRequest(QString fullpath,QString type) ;
     void UpdateTabRequest(QString,TabData tabData);
     void ShowMsgRequest(QString Type,QString Msg );
+
+    void  respondActivateProjectTreeLeaf(QString dir,QStringList allLeaf);
 
 
 public slots:
@@ -68,6 +71,7 @@ public slots:
     void Rename();
     void deleteItem();
     void DataShowAsTable();
+    void  getActivateProjectTreeLeaf(int id);
 
 protected :
      void run();
@@ -76,13 +80,16 @@ protected :
 
 private:
 
-             void openProject(QString RootPath);
+             QTreeWidgetItem*  openProject(QString RootPath);
              void    WalkPath(QString PathRoot,TreeItem *TreeRoot );
               QVector<QTreeWidgetItem*>  Projects;
+
               TreeItem * RightKeyClickedItem;
 
+              QTreeWidgetItem* ActivateProject;
+
               QString oldNodeName;  //重命名时暂时备份旧的节点名
-               QString PathCur2Root(QTreeWidgetItem *cur);
+              QString PathCur2Root(QTreeWidgetItem *cur);
 
 
 };

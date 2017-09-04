@@ -3,8 +3,9 @@
 BLLProjectsManagerTree::BLLProjectsManagerTree(QWidget *parent) :
     QTreeWidget(parent)
 {
+
     myProjectDir= "I:\\Projects\\Qt\\AiProjects";
-    openProject(myProjectDir+"\\Project1");
+    ActivateProject=  openProject(myProjectDir+"\\Project1");
 
     setColumnCount(1);
     setHeaderHidden(true);
@@ -46,12 +47,14 @@ BLLProjectsManagerTree::BLLProjectsManagerTree(QWidget *parent) :
 
 }
 void BLLProjectsManagerTree::ItemExpanded(QTreeWidgetItem*Item ) {
-       Item->setIcon(0,QIcon(":/res/Images/FolderOpen.png"));
+       if(Item->parent()!=NULL)
+           Item->setIcon(0,QIcon(":/res/Images/FolderOpen.png"));
 }
 void BLLProjectsManagerTree::ItemCollapsed(QTreeWidgetItem*Item)  {
-      Item->setIcon(0,QIcon(":/res/Images/FolderClose.png"));
+     if(Item->parent() !=NULL )
+            Item->setIcon(0,QIcon(":/res/Images/FolderClose.png"));
 }
-void BLLProjectsManagerTree:: openProject(QString RootPath){
+QTreeWidgetItem* BLLProjectsManagerTree:: openProject(QString RootPath){
 
     emit ShowMsgRequest("","Open "+RootPath);//或许messageManager 对象尚未初始化完成
 
@@ -63,6 +66,7 @@ void BLLProjectsManagerTree:: openProject(QString RootPath){
 
     Projects.append(Project);
 
+    return Project;
 
 }
 void  BLLProjectsManagerTree::  WalkPath(QString PathRoot,TreeItem *TreeRoot )
@@ -75,15 +79,14 @@ void  BLLProjectsManagerTree::  WalkPath(QString PathRoot,TreeItem *TreeRoot )
 
             }else{
               if(fileInfo.fileName()=="." || fileInfo.fileName()=="..") continue;
-              TreeItem *cur= addChild(TreeRoot,fileInfo.baseName(),QIcon(":/res/Images/FolderOpen.png"),Node);
+              TreeItem *cur= addChild(TreeRoot,fileInfo.baseName(),QIcon(":/res/Images/FolderClose.png"),Node);
                WalkPath(fileInfo.absoluteFilePath(), cur);
+               if( cur->childCount() >0 ) cur->setIcon(0,QIcon(":/res/Images/FolderOpen.png") );
+
            }
 
       }//for
-
-
 }
-
 
 TreeItem * BLLProjectsManagerTree::addChild(QTreeWidgetItem *parent,QString name,QIcon icon,myItemType isLeaf){
 
@@ -166,6 +169,14 @@ void BLLProjectsManagerTree::contextMenuEvent(QContextMenuEvent *event){
         menu->exec(QCursor::pos());
      }
 }
+  void BLLProjectsManagerTree::  getActivateProjectTreeLeaf(int id)
+   {
+       QStringList path(  "/"+ActivateProject->text(0) ), allLeaf;
+       getAllLeaf((TreeItem*)ActivateProject, path,allLeaf);
+       emit  respondActivateProjectTreeLeaf(myProjectDir, allLeaf );
+    }
+
+
 void  BLLProjectsManagerTree:: DataShowAsTable()
 {
                 TreeItem * Item=(TreeItem *)currentItem();
@@ -178,7 +189,21 @@ void  BLLProjectsManagerTree:: DataShowAsTable()
 }
 void BLLProjectsManagerTree:: deleteItem(){
 
+      TreeItem * Item=(TreeItem *)currentItem();
+       QString  path=myProjectDir+PathCur2Root( Item );
+      QString Text="Confirm to delete   "+path+" and its subitems?";
 
+       if(QMessageBox::information(NULL,"Confirm",Text,QMessageBox::Yes | QMessageBox::No , QMessageBox::No)==QMessageBox::Yes  ) {
+                 QDir dir(path);
+                 if(dir.exists()){
+                         dir.remove(path);
+                         TreeItem * ParentOfItem=(TreeItem *)Item->parent();
+                         ParentOfItem->removeChild(Item);
+
+                 }else{
+                         QMessageBox::information(NULL,"Warning",Text,QMessageBox::Yes);
+                 }
+      }
 }
 void BLLProjectsManagerTree::AddaFolder(){
 
@@ -267,6 +292,25 @@ void  BLLProjectsManagerTree:: AddCsv(){
 
     newTxt.close();
 
-
-
 }
+void BLLProjectsManagerTree :: getAllLeaf(TreeItem * root,QStringList &path ,QStringList &allLeaf){
+     if(!root) return ;
+
+    if(root->child(0)==nullptr &&root->NodeType==Leaf ){  // leaf node
+         QString t;
+         for(auto p=path.begin();p!=path.end();++p){
+               t.append(*p);
+         }
+         cout<<t.toStdString()<<endl;
+         allLeaf.append(t);
+    } else{
+        for(int i=0;i<root->childCount();++i)
+        {
+                 TreeItem *child= (TreeItem*) root->child(i);
+                  path.append("/"+child->text(0));
+                   getAllLeaf(child,path,allLeaf);
+                  path.pop_back();
+         }
+    }
+}
+

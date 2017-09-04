@@ -14,21 +14,42 @@ CentralShowTabWgt::CentralShowTabWgt()
     setTabIcon(plotIndex,QIcon(":/res/Images/Figure.png"));
     setTabsClosable(true);
 
+    //addTab(new zoomAbleTableWgt(this),"zoomAbleTableWgt");
+
     QMainWindow * aTab=new QMainWindow(this);
 
     TabList.append( TabData(aTab,"DataTableTest","Data Table ") );
     aTab->setCentralWidget(new TextDataWgt());
     addTab(aTab ,"Text");
+
     connect(this,SIGNAL(tabCloseRequested(int)),SLOT(CloseTab(int) ) );
 
     reader=new UtilReadTextFile() ; //线程文本读取器
     connect(reader,SIGNAL( ShowMsgRequest(QString,QString)) ,this,SLOT( transpondMsg(QString ,QString )  )     );//SLOT中的槽函数不要写形参
 
 }
+  void CentralShowTabWgt::add2TabList(TabData tabData){
+      this-> TabList.append(tabData);
+
+  }
+
+TAB_TYPE CentralShowTabWgt :: getCurTabType() {
+           int tabIndex =currentIndex();
+           for(auto iter=TabList.begin();iter!=TabList.end();++iter)
+           {
+                 int curIndex= this->indexOf(iter->wgt);
+                 if(curIndex == tabIndex ) return iter->tabType;
+           }
+            return TAB_OTHERS;
+}
 
 void CentralShowTabWgt:: CloseTab(int index)
 {
-    removeTab(index);
+      //deleteTab(  );
+      removeTab(index);
+      deleteTab( widget(index)  );
+
+
 }
 void CentralShowTabWgt:: transpondMsg(QString Type,QString message)
 {
@@ -75,11 +96,11 @@ void CentralShowTabWgt::ShowData(QString fullpath,QString type){
 
                 DataTableWgt * tableTab=new DataTableWgt();
 
-
                 reader->ReadTextAsTable(fullpath, tableTab);
                 QString label=fullpath.mid(1+fullpath.lastIndexOf("\\"));
 
                 int tableTabIndex=  addTab(tableTab ,label);
+
                 setTabIcon(tableTabIndex,QIcon(":/res/Images/table.png"));
 
                 setCurrentWidget(tableTab);
@@ -87,6 +108,8 @@ void CentralShowTabWgt::ShowData(QString fullpath,QString type){
     }
 
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 TabData * CentralShowTabWgt::   findTabWithID(QString id ){
 
     for ( auto iter = TabList.begin();iter!=TabList.end(); ++iter){
@@ -96,7 +119,19 @@ TabData * CentralShowTabWgt::   findTabWithID(QString id ){
     }
     return NULL;
 }
+void CentralShowTabWgt:: deleteTab(QWidget *delWgt)
+{
+    int i=0;
+     for ( auto iter = TabList.begin();iter!=TabList.end(); ++iter,++i){
+          if(delWgt==iter->wgt)
+          {
+                 iter->freeWgt();
+                 TabList.removeAt(i);
+                 break;
+          }
+     }
 
+}
 
 
 

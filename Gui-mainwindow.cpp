@@ -65,7 +65,8 @@
 #include <qdebug.h>
 #include <QTableWidget>
 #include<QTreeWidget>
-#include "svm/AiSvm.hpp"
+#include <QMetaType>
+#include "svm/AiSvm.h"
 
 
 static const char * const message =
@@ -93,8 +94,13 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
     : QMainWindow(parent, flags)
 {
 
-    if (svmTest==NULL)  svmTest=new AiSVM;
+     cout<< " The current object of type MainWindow is at " <<QThread::currentThreadId()<<endl;
 
+
+    LearnerList=new QList<LearnerUI*> ();
+
+    //注册自定义类型*****
+    qRegisterMetaType<AiMsg> ("AiMsg");
 
     setObjectName("MainWindow");
     setWindowTitle("AiDesigner");
@@ -104,7 +110,6 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
     center->setReadOnly(true);
      center->setMinimumSize(1000, 700);
     setCentralWidget(center);
-
 
     showMaximized();
 
@@ -122,11 +127,37 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
 
     connect(CentralTabWidget,SIGNAL(   ShowMsgRequest(QString,QString)) ,messagesManager,SLOT(RecvAMessage(QString,QString))    );
 
-    connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(QString,QString)), messagesManager,SLOT(RecvAMessage(QString,QString)) );
 
-     svmTest->setTrainingData("I:\\Projects\\Qt\\AiProjects\\Project1\\Data\\horseColicTest.txt");
-     svmTest->initDefaultParams();
+    connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
+    connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
 
+
+     setupASvmInstance();
+
+}
+void MainWindow::setupASvmInstance()
+{
+         LearnerUI *svm=new LearnerUI;
+        AiSVM *newSvm= new AiSVM;
+
+        connect(newSvm,SIGNAL(ShowMsgRequest(AiMsg)),messagesManager,SLOT(  RecvAMessage(AiMsg)    ) ) ;
+        connect(newSvm,SIGNAL(ShowMsgRequest(AiMsg)),  progressWgtManager ,SLOT(RecvAMessage(AiMsg))  );
+
+        connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
+        connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
+        BLL_SVM_UI *t=  new BLL_SVM_UI();
+        connect(t,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
+        connect(t, SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
+        connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), t ,SLOT(receive_trainingData(QString,  QStringList))   );
+        t->init();
+        t->setLearner(newSvm);
+        svm->Ui=t;
+
+        LearnerList->append(svm);
+
+        CentralTabWidget->addTab(  svm->Ui ,"SVM setup"  );
+
+        CentralTabWidget->add2TabList(TabData(t,TAB_GUI_LEARNER,"dgjio","SVM setup") );
 
 }
 
@@ -138,12 +169,25 @@ void MainWindow::actionTriggered(QAction *action)
 void MainWindow::ActionNewClicked()
 {
 
-   QMessageBox::information(this,"Prmote","Test  SVM");
-
-    svmTest->train();
 
 }
+void MainWindow:: RunModel()
+{
+   cout<<  typeid( BLL_SVM_UI ).name() <<endl;
+   cout<<typeid ( CentralTabWidget->currentWidget() ).name() <<endl;
 
+   if  ( CentralTabWidget->getCurTabType() ==TAB_GUI_LEARNER  )
+   {
+        cout<<"BLL_SVM_UI"<<endl;
+        GuiLearner * lnr= dynamic_cast<GuiLearner*> (CentralTabWidget->currentWidget() ) ;
+        if(lnr && lnr->learner)
+        {
+                lnr->learner->train();
+        }
+   }
+
+
+}
 
 void MainWindow::setupToolBar()
 {
@@ -154,8 +198,18 @@ void MainWindow::setupToolBar()
 
     myToolBar->addAction(QIcon(":/res/Images/open.png"),"Open");
     myToolBar->addAction(QIcon(":res/Images/save.png"),"Save");
-
     addToolBar(myToolBar);
+
+     myToolBar=new QToolBar("myToolBar1",this);
+     QAction *Run=myToolBar->addAction(QIcon(":/res/Images/Run.png"),"Run");
+     connect(Run,SIGNAL(triggered(bool)),SLOT( RunModel()  ) );
+
+     QAction *Check=myToolBar->addAction(QIcon(":/res/Images/Check.png"),"Check");
+     connect(Check,SIGNAL(triggered(bool)),SLOT(   CheckModel()  ));
+
+     addToolBar(myToolBar);
+
+
 
     /*
     for (int i = 0; i < 3; ++i) {
@@ -180,8 +234,6 @@ void MainWindow::setupMenuBar()
 
     QAction *action = menu->addAction(tr("Save layout..."));
     connect(action, SIGNAL(triggered()), this, SLOT(saveLayout()));
-
-
 
     action = menu->addAction(tr("Load layout..."));
     connect(action, SIGNAL(triggered()), this, SLOT(loadLayout()));
@@ -227,14 +279,80 @@ void MainWindow::setupMenuBar()
         toolBarMenu->addMenu(toolBars.at(i)->menu);
 
     dockWidgetMenu = menuBar()->addMenu(tr("&Dock Widgets"));
+
+    setMenuBarDataPreProcess();
+    setMenuBarFeaturesEnginering();
+
+    setMenuBarMachineLearning();
+    QMenu *MenuHelp=menuBar()->addMenu(tr("Help(H)"));
+    QAction * Action=MenuHelp->addAction(tr("About"));
+
 }
-void  MainWindow:: NewProjectCommand(){
 
+void MainWindow::setMenuBarDataPreProcess(){
 
-    ProjectTreeViewer->addProject("Test");
+    QMenu *MenuDataPreProcess=menuBar()->addMenu(tr("Preprocess(P)"));
+     QAction *Action= MenuDataPreProcess->addAction(tr("Sample and Filter"));
+     Action= MenuDataPreProcess->addAction(tr("Type transformation"));
+     Action= MenuDataPreProcess->addAction(tr("Split "));
+     Action= MenuDataPreProcess->addAction(tr("Fill Missing value"));
+     Action= MenuDataPreProcess->addAction(tr("Normalize"));
+     Action= MenuDataPreProcess->addAction(tr("Standardize"));
 
 
 }
+
+void MainWindow::setMenuBarFeaturesEnginering()
+{
+      QMenu *MenuFeaturesEnginering=menuBar()->addMenu(tr("Features Enginering(F)"));
+      QAction *Action =MenuFeaturesEnginering->addAction(tr("Feature Transformation"));
+      Action =MenuFeaturesEnginering->addAction(tr("Feature Evaluation"));
+      Action =MenuFeaturesEnginering->addAction(tr("Feature Selection"));
+      Action =MenuFeaturesEnginering->addAction(tr("Feature Generation"));
+
+
+}
+void MainWindow::setMenuBarMachineLearning(){
+    QMenu *MenuMachineLearning=menuBar()->addMenu(tr("Machine Learning(A)"));
+
+    QAction *Action =MenuMachineLearning->addAction(tr("Binary-class"));
+
+    Action =MenuMachineLearning->addAction(tr("Multi-class"));
+
+    Action =MenuMachineLearning->addAction(tr("Cluster"));
+
+    Action =MenuMachineLearning->addAction(tr("Regression"));
+
+    Action =MenuMachineLearning->addAction(tr("Relevant Recommendations"));
+
+    Action =MenuMachineLearning->addAction(tr("Evaluation "));
+
+     Action =MenuMachineLearning->addAction(tr("Prediction "));
+
+}
+void  MainWindow:: NewProjectCommand()
+{
+     ProjectTreeViewer->addProject("Test");
+}
+ void MainWindow:: CheckModel()
+ {
+         QWidget * curWgt=   CentralTabWidget->currentWidget();
+         for(auto  i= LearnerList->begin()   ;i !=LearnerList->end();++i   ){
+                if(  (*i) ->Ui == curWgt   )
+                {
+                    GuiLearner *guilnr= (  (GuiLearner *) ( (*i) ->Ui)  );
+                    Learner * lnr=guilnr->learner ;
+                    if(lnr){
+
+                            guilnr->updateParamFromUI();
+                            lnr->setTrainingData();
+                    }
+                    break;
+                }
+         }
+
+ }
+
 void MainWindow::setDockOptions()
 {
     DockOptions opts;
@@ -444,10 +562,16 @@ void MainWindow::DefaultLayout(){
      splitDockWidget(MessagesDockWidget,ProgressDockWidget,Qt::Horizontal);
 
 }
+void MainWindow::  currrntTabChanged(int currentTabIndex)
+{
 
+
+
+}
 void MainWindow::CreateCentralDockWidget(){
     CentralTabWidget =new CentralShowTabWgt();//CentralTabWidget 中填内容由BLL 层控制
 
+    connect(CentralTabWidget,SIGNAL(currentChanged(int)),this,SLOT( currrntTabChanged(int )   ) );
     CentralDockWidget=new ColorSwatch("",this,0);
     BlueTitleBar *titleBar=new BlueTitleBar(CentralDockWidget,false);
 
@@ -456,8 +580,13 @@ void MainWindow::CreateCentralDockWidget(){
 
     CentralDockWidget->setTitleBarWidget(titleBar);
 
+
+
+
     CentralDockWidget->setWidget(CentralTabWidget);
     //CentralDockWidget->setFeatures( QDockWidget::NoDockWidgetFeatures);
+
+
     addDockWidget(Qt::LeftDockWidgetArea,CentralDockWidget);
 
 
@@ -569,11 +698,7 @@ void MainWindow:: CreateProjectDockWidget(){
 
                  progressWgtManager=new BLLProgressWgt();
 
-
-
                  ProgressDockWidget->setWidget(progressWgtManager);
-
-                 connect(libsvm::svm_Reportor, SIGNAL(ShowMsgRequest(QString,QString)), progressWgtManager,SLOT(RecvAMessage(QString,QString)));
 
                  //*******************
                  addDockWidget(Qt::BottomDockWidgetArea,ProgressDockWidget);

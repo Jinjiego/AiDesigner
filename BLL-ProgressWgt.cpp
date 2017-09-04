@@ -11,14 +11,21 @@ BLLProgressWgt::BLLProgressWgt(QWidget *parent):QTreeWidget(parent)
 
     activatedProjectRoot=activatedProjectTree->activatedProject;
 
-   // Project->addChild();
-
-
+    activatedProjectRoot->setExpanded(false);
 
 }
 void  BLLProgressWgt::RecvAMessage(QString type, QString message){
-      if(type=="Progress"){
-
+      if(type=="Progress")
+      {
              activatedProjectTree->progressBar->setValue(message.toInt() );
       }
 }
+void BLLProgressWgt:: RecvAMessage(AiMsg msg )
+{
+      if(msg.Type==MSG_TYPE_NUM)
+      {
+             activatedProjectRoot-> setExpanded(true);
+             activatedProjectTree->progressBar->setValue(msg.Num);
+      }
+}
+

@@ -15,6 +15,9 @@ public:
      DataTableWgt(int row,int col);
     void setCellContent(int row,int col,QString content);
 
+
+
+
 };
 
 #endif // BASEDATATABLEWGT_H

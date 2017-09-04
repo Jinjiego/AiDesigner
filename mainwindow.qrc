@@ -25,5 +25,7 @@
         <file>Images/table.png</file>
         <file>Images/logo.png</file>
         <file>Images/Figure.png</file>
+        <file>Images/Run.png</file>
+        <file>Images/Check.png</file>
     </qresource>
 </RCC>

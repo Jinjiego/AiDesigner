@@ -56,7 +56,11 @@
 #include <QTreeWidget>
 #include <QLabel>
 #include <QIcon>
-#include "svm/AiSvm.hpp"
+#include <QList>
+
+#include "svm/AiSvm.h"
+#include "svm/BLL_SVM_UI.h"
+
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
 QT_FORWARD_DECLARE_CLASS(QSignalMapper)
@@ -74,6 +78,7 @@ class MainWindow : public QMainWindow
     QAction *createDockWidgetAction;
     QMenu *destroyDockWidgetMenu;
 
+    QAction *Run,*Check;
     ///////////////////////////////////////////////////////////////////////////
     ColorSwatch * ProjectDockWidget;
     BLLProjectsManagerTree * ProjectTreeViewer;
@@ -91,9 +96,9 @@ class MainWindow : public QMainWindow
 
     CentralShowTabWgt *CentralTabWidget;
 
+     QList<LearnerUI* >  *LearnerList;
 
 
-     AiSVM *svmTest=NULL;
 public:
     MainWindow(const QMap<QString, QSize> &customSizeHints,
                 QWidget *parent = 0, Qt::WindowFlags flags = 0);
@@ -112,13 +117,20 @@ public slots:
     void createDockWidget();
     void destroyDockWidget(QAction *action);
 
+    void currrntTabChanged(int currentTabIndex);
     void setupDefaultLayout() ;
     void NewProjectCommand();
-
+    void CheckModel()  ;
+   void  RunModel();
 
 private:
     void setupToolBar();
     void setupMenuBar();
+
+    void setMenuBarDataPreProcess();
+    void setMenuBarMachineLearning();
+    void setMenuBarFeaturesEnginering();
+
     void setupDockWidgets(const QMap<QString, QSize> &customSizeHints);
     //////////////////////////////////////////////////////////
 
@@ -128,6 +140,12 @@ private:
      void CreateParameterListDockWidget();
      void CreateProgressDockWidget();
      void DefaultLayout();
+     ////////////////////////////////////////////////////////////
+     void setupASvmInstance();
+
+
+
+
 
 
 };

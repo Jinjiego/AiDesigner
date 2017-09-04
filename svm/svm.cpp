@@ -45,10 +45,26 @@ static inline double powi(double base, int times)
 //***********************************************************
 //jinjiego
 svmReportor * svm_Reportor=NULL;
+
 static void SendMessage(const char *type,const char *message){
 
-     if  (svm_Reportor!=NULL)
-           svm_Reportor->svmSendMessage(QString(type),QString(message));
+     if  (svm_Reportor!=NULL){
+            AiMsg  msg;
+            msg.senderId= QThread::currentThreadId();
+            if(  0== strcmp("Progress",type)    ){
+                 msg.Type=MSG_TYPE_NUM;
+                 msg.Num=atoi(message);
+
+            } else
+            {
+                cout<<">>>"<<type<<endl;
+                msg.Type=MSG_TYPE_TEXT;
+                msg.appendText(QString(message));
+            }
+            //svm_Reportor->svmSendMessage( QString(type), QString(message) );
+            svm_Reportor->svmSendMessage(msg);
+
+     }
 
 }
 //*********************************************************************

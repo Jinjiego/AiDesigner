@@ -31,11 +31,13 @@ HEADERS += \
     baseWgt/BASE-Type.hpp \
     baseWgt/BASE-Util.hpp\
     Solvers/Learner.hpp \
-    svm/AiSvm.hpp \
     CplusHeader.h \
     Common.h \
     GlobalVars.h \
-    BLL-ProgressWgt.h
+    BLL-ProgressWgt.h \
+    svm/AiSvm.h \
+    svm/BLL_SVM_UI.h \
+    baseWgt/BASE-zoomAbleTableWgt.h
 
 
 SOURCES += \
@@ -62,7 +64,10 @@ SOURCES += \
     baseWgt/BASE-TextDataWgt.cpp \
     Common.cpp \
     GlobalVars.cpp \
-    BLL-ProgressWgt.cpp
+    BLL-ProgressWgt.cpp \
+    svm/AiSvm.cpp \
+    svm/BLL_SVM_UI.cpp \
+    baseWgt/BASE-zoomAbleTableWgt.cpp
 
 build_all:!build_pass {
     CONFIG -= build_all
@@ -76,5 +81,9 @@ RESOURCES += mainwindow.qrc
 
 target.path =$$[ProjectDir]/mainwindows
 INSTALLS += target
+
+DISTFILES +=
+
+FORMS +=
 
 

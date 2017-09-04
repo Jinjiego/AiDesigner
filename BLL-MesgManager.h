@@ -13,11 +13,10 @@ public:
 
 signals:
 
-
-
 public slots:
+     void RecvAMessage(QString type,QString message);
+     void RecvAMessage(AiMsg msg);
 
-     void RecvAMessage(QString type, QString message);
 private:
      QListWidgetItem*MessageItem;
 
