@@ -99,11 +99,11 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
 
     LearnerList=new QList<LearnerUI*> ();
 
-    //注册自定义类型*****
+    //★★★注册自定义类型,方可作为消息*****
     qRegisterMetaType<AiMsg> ("AiMsg");
 
     setObjectName("MainWindow");
-    setWindowTitle("AiDesigner");
+    setWindowTitle("MLDA");
 
 
     center = new QTextEdit(this);
@@ -145,19 +145,21 @@ void MainWindow::setupASvmInstance()
 
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
+
         BLL_SVM_UI *t=  new BLL_SVM_UI();
+
         connect(t,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
         connect(t, SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
         connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), t ,SLOT(receive_trainingData(QString,  QStringList))   );
-        t->init();
+
         t->setLearner(newSvm);
         svm->Ui=t;
 
+        t->init();
         LearnerList->append(svm);
 
-        CentralTabWidget->addTab(  svm->Ui ,"SVM setup"  );
-
         CentralTabWidget->add2TabList(TabData(t,TAB_GUI_LEARNER,"dgjio","SVM setup") );
+
 
 }
 
@@ -173,6 +175,7 @@ void MainWindow::ActionNewClicked()
 }
 void MainWindow:: RunModel()
 {
+    // run the model
    cout<<  typeid( BLL_SVM_UI ).name() <<endl;
    cout<<typeid ( CentralTabWidget->currentWidget() ).name() <<endl;
 
@@ -278,7 +281,7 @@ void MainWindow::setupMenuBar()
     for (int i = 0; i < toolBars.count(); ++i)
         toolBarMenu->addMenu(toolBars.at(i)->menu);
 
-    dockWidgetMenu = menuBar()->addMenu(tr("&Dock Widgets"));
+    dockWidgetMenu = menuBar()->addMenu(tr("&View"));
 
     setMenuBarDataPreProcess();
     setMenuBarFeaturesEnginering();
@@ -315,9 +318,17 @@ void MainWindow::setMenuBarFeaturesEnginering()
 void MainWindow::setMenuBarMachineLearning(){
     QMenu *MenuMachineLearning=menuBar()->addMenu(tr("Machine Learning(A)"));
 
-    QAction *Action =MenuMachineLearning->addAction(tr("Binary-class"));
+    //********************************************
 
-    Action =MenuMachineLearning->addAction(tr("Multi-class"));
+    QMenu *BinaryClass =MenuMachineLearning->addMenu(tr("Binary-class"));
+
+    QAction *svmAct = BinaryClass->addAction(tr("Support Vector Machine"));
+     connect(svmAct,SIGNAL(triggered(bool)),this,SLOT(setupASvmInstance() ) );
+
+    QAction *LogisticRegAct = BinaryClass->addAction(tr("Logistic Regression"));
+
+    //***************************************
+    QAction * Action =MenuMachineLearning->addAction(tr("Multi-class"));
 
     Action =MenuMachineLearning->addAction(tr("Cluster"));
 
@@ -333,11 +344,15 @@ void MainWindow::setMenuBarMachineLearning(){
 void  MainWindow:: NewProjectCommand()
 {
      ProjectTreeViewer->addProject("Test");
+
 }
  void MainWindow:: CheckModel()
  {
+     //得到当前活动的Tab
          QWidget * curWgt=   CentralTabWidget->currentWidget();
-         for(auto  i= LearnerList->begin()   ;i !=LearnerList->end();++i   ){
+
+         for(auto  i= LearnerList->begin()   ;i !=LearnerList->end();++i   )
+         {
                 if(  (*i) ->Ui == curWgt   )
                 {
                     GuiLearner *guilnr= (  (GuiLearner *) ( (*i) ->Ui)  );

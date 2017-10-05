@@ -18,6 +18,7 @@ public slots:
      void RecvAMessage(AiMsg msg);
 
 private:
+     QListWidgetItem* getItemWith(const AiMsg & msg);
      QListWidgetItem*MessageItem;
 
 };

@@ -75,7 +75,7 @@ void  BLLProjectsManagerTree::  WalkPath(QString PathRoot,TreeItem *TreeRoot )
      for(QFileInfo fileInfo:dir.entryInfoList())
      {
            if(fileInfo.isFile() ){
-                addChild(TreeRoot,fileInfo.fileName(),QIcon(),Leaf);
+                addChild(TreeRoot,fileInfo.fileName(),QIcon(":/res/Images/TextFileLogo.png"),Leaf);
 
             }else{
               if(fileInfo.fileName()=="." || fileInfo.fileName()=="..") continue;
@@ -142,7 +142,8 @@ void BLLProjectsManagerTree:: ItemDoubleClicked(QTreeWidgetItem*Item,int index){
 
 }
 
-void BLLProjectsManagerTree::contextMenuEvent(QContextMenuEvent *event){
+void BLLProjectsManagerTree::contextMenuEvent(QContextMenuEvent *event)
+{
     //右键菜单
       QPoint p=  event->pos();
       RightKeyClickedItem= (TreeItem *)itemAt(p);
@@ -191,19 +192,26 @@ void BLLProjectsManagerTree:: deleteItem(){
 
       TreeItem * Item=(TreeItem *)currentItem();
        QString  path=myProjectDir+PathCur2Root( Item );
-      QString Text="Confirm to delete   "+path+" and its subitems?";
+      QString Text="<"+path+"> and its subitems  will be deleted permanently！ ";
+      QDir dir(path);
+      if(Item->NodeType == Leaf)
+      {
+           if(QMessageBox::information(NULL,MLDA,Text,QMessageBox::Yes | QMessageBox::No , QMessageBox::No)==QMessageBox::Yes  )
+                    dir.remove(path )  ;
 
-       if(QMessageBox::information(NULL,"Confirm",Text,QMessageBox::Yes | QMessageBox::No , QMessageBox::No)==QMessageBox::Yes  ) {
-                 QDir dir(path);
-                 if(dir.exists()){
-                         dir.remove(path);
-                         TreeItem * ParentOfItem=(TreeItem *)Item->parent();
-                         ParentOfItem->removeChild(Item);
-
-                 }else{
-                         QMessageBox::information(NULL,"Warning",Text,QMessageBox::Yes);
-                 }
+      }else{
+          if(QMessageBox::information(NULL,"Confirm",Text,QMessageBox::Yes | QMessageBox::No , QMessageBox::No)==QMessageBox::Yes  ) {
+              if(dir.exists()){
+                  //dir.remove(path);
+                  DelDir(path);
+              }else{
+                  QMessageBox::information(NULL,"Warning","delete Error!",QMessageBox::Yes);
+              }
+          }
       }
+      TreeItem * ParentOfItem=(TreeItem *)Item->parent();
+      ParentOfItem->removeChild(Item);
+
 }
 void BLLProjectsManagerTree::AddaFolder(){
 

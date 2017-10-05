@@ -15,7 +15,7 @@ class CentralShowTabWgt : public QTabWidget
 
 public:
     CentralShowTabWgt();
-    void add2TabList(TabData tabData);
+    void add2TabList(const TabData& tabData);
     TAB_TYPE  getCurTabType() ;
 
 

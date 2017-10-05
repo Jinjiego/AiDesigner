@@ -1,7 +1,7 @@
 TEMPLATE = app
 QT += widgets printsupport
 
-############################################################
+####################配置QScintilla  #####################################
 ROOT =I:/Projects/Qt/AiDesigner
 
 LIBS += -L$${ROOT}/GuiLibs/QScintilla -lqscintilla2_qt5d
@@ -23,7 +23,6 @@ HEADERS += \
     Gui-colorswatch.h \
     Gui-mainwindow.h \
     Gui-toolbar.h \
-    svm/svm.h \
     baseWgt/BASE-DataTableWgt.h \
     baseWgt/BASE-Plot.h \
     baseWgt/BASE-QCustomPlot.h \
@@ -37,7 +36,37 @@ HEADERS += \
     BLL-ProgressWgt.h \
     svm/AiSvm.h \
     svm/BLL_SVM_UI.h \
-    baseWgt/BASE-zoomAbleTableWgt.h
+    baseWgt/BASE-zoomAbleTableWgt.h \
+    svm/alg_svm.h \
+    baseWgt/BASE-Gadget.h \
+    baseWgt/BASE-AiQComboBox.h \
+    baseWgt/BASE-AiQComboBox.h \
+    baseWgt/BASE-DataTableWgt.h \
+    baseWgt/BASE-Gadget.h \
+    baseWgt/BASE-Plot.h \
+    baseWgt/BASE-QCustomPlot.h \
+    baseWgt/BASE-TextDataWgt.h \
+    baseWgt/BASE-Type.hpp \
+    baseWgt/BASE-Util.hpp \
+    baseWgt/BASE-zoomAbleTableWgt.h \
+    Solvers/Learner.hpp \
+    svm/AiSvm.h \
+    svm/alg_svm.h \
+    svm/BLL_SVM_UI.h \
+    BLL-CentralShowTabWgt.h \
+    BLL-MesgManager.h \
+    BLL-ParameterTab.h \
+    BLL-ProgressWgt.h \
+    BLL-ProjectsManagerTree.h \
+    Common.h \
+    cplusheader.h \
+    GlobalVars.h \
+    Gui-colorswatch.h \
+    Gui-mainwindow.h \
+    Gui-toolbar.h \
+    ModelEvalution/ModelEvaluate1.h \
+    ModelEvalution/alg-modelevaluate.h \
+    ModelEvalution/BLL-ModelEvaluator_UI.h
 
 
 SOURCES += \
@@ -57,7 +86,6 @@ SOURCES += \
     Gui-mainwindow.cpp \
     Gui-toolbar.cpp \
     main.cpp \
-    svm/svm.cpp \
     baseWgt/BASE-DataTableWgt.cpp \
     baseWgt/BASE-Plot.cpp \
     baseWgt/BASE-QCustomPlot.cpp \
@@ -67,7 +95,33 @@ SOURCES += \
     BLL-ProgressWgt.cpp \
     svm/AiSvm.cpp \
     svm/BLL_SVM_UI.cpp \
-    baseWgt/BASE-zoomAbleTableWgt.cpp
+    baseWgt/BASE-zoomAbleTableWgt.cpp \
+    svm/alg_svm.cpp \
+    baseWgt/BASE-Gadget.cpp \
+    baseWgt/BASE-AiQComboBox.cpp \
+    baseWgt/BASE-AiQComboBox.cpp \
+    baseWgt/BASE-DataTableWgt.cpp \
+    baseWgt/BASE-Gadget.cpp \
+    baseWgt/BASE-Plot.cpp \
+    baseWgt/BASE-QCustomPlot.cpp \
+    baseWgt/BASE-TextDataWgt.cpp \
+    baseWgt/BASE-zoomAbleTableWgt.cpp \
+    svm/aisvm.cpp \
+    svm/alg_svm.cpp \
+    svm/BLL_SVM_UI.cpp \
+    BLL-CentralShowTabWgt.cpp \
+    BLL-MesgManager.cpp \
+    BLL-ParameterTab.cpp \
+    BLL-ProgressWgt.cpp \
+    BLL-ProjectsManagerTree.cpp \
+    common.cpp \
+    GlobalVars.cpp \
+    Gui-colorswatch.cpp \
+    Gui-mainwindow.cpp \
+    Gui-toolbar.cpp \
+    main.cpp \
+    ModelEvalution/alg-modelevaluate.cpp \
+    ModelEvalution/BLL-ModelEvaluator_UI.cpp
 
 build_all:!build_pass {
     CONFIG -= build_all

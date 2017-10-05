@@ -2,7 +2,6 @@
 #define _LIBSVM_H
 
 #define LIBSVM_VERSION 322
-//#include "GlobalVars.h"
 #include"baseWgt/BASE-Util.hpp"
 #include <QThread>
 #include <baseWgt/BASE-Type.hpp>

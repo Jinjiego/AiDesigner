@@ -3,6 +3,8 @@
 DataTableWgt::DataTableWgt(int row,int col)
 {
 
+       setWindowFlags(Qt::FramelessWindowHint);
+
        setRowCount(row);
        setColumnCount(col);
 

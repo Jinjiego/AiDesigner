@@ -80,23 +80,25 @@ class MainWindow : public QMainWindow
 
     QAction *Run,*Check;
     ///////////////////////////////////////////////////////////////////////////
+    // 项目管理树
     ColorSwatch * ProjectDockWidget;
     BLLProjectsManagerTree * ProjectTreeViewer;
-
+  // 消息显示窗口
     ColorSwatch * MessagesDockWidget;
     BLLMesgManager *messagesManager;
-
-
+   //
     ColorSwatch * ParameterListDockWidget;
 
+    // 进度条管理窗口
     ColorSwatch * ProgressDockWidget;
     BLLProgressWgt *progressWgtManager;
 
+    // central window
     QDockWidget * CentralDockWidget;
-
     CentralShowTabWgt *CentralTabWidget;
 
-     QList<LearnerUI* >  *LearnerList;
+
+     QList<LearnerUI* >  *LearnerList;   //用以管理学习器,使用链表管理
 
 
 public:
@@ -122,7 +124,7 @@ public slots:
     void NewProjectCommand();
     void CheckModel()  ;
    void  RunModel();
-
+       void setupASvmInstance();
 private:
     void setupToolBar();
     void setupMenuBar();
@@ -141,11 +143,6 @@ private:
      void CreateProgressDockWidget();
      void DefaultLayout();
      ////////////////////////////////////////////////////////////
-     void setupASvmInstance();
-
-
-
-
 
 
 };

@@ -1,9 +1,11 @@
 #ifndef AISVM_H
 #define AISVM_H
-#include"svm/svm.h"
+#include"svm/alg_svm.h"
 #include "CplusHeader.h"
 #include <QThread>
 #include "baseWgt/BASE-Util.hpp"
+#include "baseWgt/BASE-Gadget.h"
+
 #include "baseWgt/BASE-Type.hpp"
 #include "Solvers/Learner.hpp"
 #define TRAINDATA_SET  1
@@ -15,10 +17,12 @@ class AiSVM:public Learner
 {
   Q_OBJECT
  public:
-    AiSVM(){
+    AiSVM()
+    {
         ModelStatus=0;
         svmProb=new svm_problem;
         svmParams=new svm_parameter;
+        svmModel=nullptr;
         trainningAble=0;
         libsvm::svm_Reportor=new svmReportor;
     }
@@ -26,29 +30,48 @@ class AiSVM:public Learner
     STATUS  setTrainingData(string fileName);
     void initDefaultParams();
     void freeMemory();
-
+    STATUS  ReadDataMatrix(const string &fileName,vector<vector<double>> &Data,int colNums);
+    //*****************************
     void train();
-
+    void DoTrain();
     void  setTrainingData();
+    //*****************************
+    void   predict();
+    void   DoPredict();
+    void evaluate();
+    void DoEvaluate();
 
     void run()
     {
-       if(trainningAble==0) /// everything is ok then to run!
-             svmModel= svm_train(svmProb,svmParams);
-       else
-            emit ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,QString("Not Ready! ") ));
-    }
-signals:
+        if(task)
+        {
+             (this->*task) ();
+             task=&AiSVM::DoPredict;
+             (this->*task) ();
 
+        }
+
+    }
+
+signals:
+     void  SendEvalutionData(vector<vector<double>> testData,vector<double> y_prediction);
+     void  SendEvalutionData(int data);
 public:
 
     int ModelStatus;
+    int sampleNums;
+    int FeatureNums;
 
     QString trainingDataSetPath;
+    QString predictDataSetPath;
+
     svm_problem *svmProb;
     svm_parameter *svmParams;
     svm_model *svmModel;
 
+
+private:
+      void (AiSVM::*task) ();
 
 };
 

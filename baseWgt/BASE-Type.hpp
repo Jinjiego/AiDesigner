@@ -6,9 +6,6 @@
 #include <QtCore/qobject.h>
 
 
-
-
-
 //这个文件要注意重复包含的问题
 enum STATUS{Ok,Error,Warning,Fail};
 enum TAB_TYPE{TAB_TEXT,TAB_FIGURE,TAB_GUI_LEARNER,TAB_OTHERS};
@@ -16,10 +13,10 @@ enum TAB_TYPE{TAB_TEXT,TAB_FIGURE,TAB_GUI_LEARNER,TAB_OTHERS};
 class TabData
 {
 public:
-    QWidget *wgt;
-    QString ID;
-    QString Label;
-    TAB_TYPE tabType;
+    QWidget *wgt;             //windows
+    QString ID;                  // 标识符 ID
+    QString Label;             //标签
+    TAB_TYPE tabType;   // 类型
 
     TabData(QWidget* w=0,QString id="",QString label=""):wgt(w),ID(id),Label(label){}
     TabData(QWidget* w=0,TAB_TYPE type=TAB_OTHERS,QString id="",QString label=""):

@@ -7,13 +7,12 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <locale.h>
-#include "svm.h"
+#include "alg_svm.h"
 
 
 namespace  libsvm{
 
 int libsvm_version = LIBSVM_VERSION;
-
 
 typedef float Qfloat;
 typedef signed char schar;

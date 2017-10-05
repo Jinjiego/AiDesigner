@@ -11,8 +11,95 @@ void AiSVM::freeMemory()
         delete svmProb;
     }
 }
-void  AiSVM:: train(){   start();  }
 
+void AiSVM:: DoTrain()
+{
+    if(trainningAble==0)     /// everything is ok then to run!
+          svmModel= svm_train(svmProb,svmParams);
+    else
+         emit ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,QString("Not Ready! ") ));
+}
+void  AiSVM:: train()
+{
+    task=&AiSVM:: DoTrain;  //让线程执行训练数据的函数
+    start();
+
+}
+STATUS AiSVM:: ReadDataMatrix(const string &fileName,vector<vector<double>> &Data,int colNums)
+{
+     ifstream fin(fileName );
+     if (!fin)
+     {
+            cout << "Error in opening file <" << fileName << ">. ABORT!";
+            AiMsg msg(Error,MSG_TYPE_TEXT,INT_MIN,QString("Error in opening file <"+  QString::fromStdString(fileName)  +">. ABORT!")) ;
+           emit ShowMsgRequest(msg);
+           return Error;
+      }
+       string line;
+        while (fin.good() )
+        {
+            getline(fin, line);
+            if( line.size()==0 ||  line =="\n" || line =="\r")
+                 break;
+            istringstream sin(line);
+            string Xi;
+            vector<double> row(colNums);
+            for (int j=0;j<colNums && !sin.eof() ;++j)
+            {
+                sin >> Xi;
+                row[j]=atof(Xi.c_str() );
+            }
+             Data.push_back(row);
+
+        }
+        fin.close();
+}
+void AiSVM::DoPredict()
+{
+     if(predictDataSetPath.size()>0 && svmModel )
+     {
+          vector<vector<double>> Data;
+
+          ReadDataMatrix(predictDataSetPath.toStdString(),Data, FeatureNums+1);
+          vector<double>  y_Prediction(Data.size() );
+
+          svm_node * input=new  svm_node[FeatureNums+1];
+          input[FeatureNums].index=-1;
+          for(int i =0;i<Data.size();++i)
+          {
+                   for(int j=0;j<FeatureNums;++j)
+                   {
+                          input[j].value = Data[i][j];
+                          input[j].index=j+1;
+                   }
+               y_Prediction[i]  = svm_predict(svmModel,input);
+          }
+
+          Gadget gadget;
+          vector<vector<double>>  Y(y_Prediction.size(),vector<double>(1,0.0) );
+          for(int i=0;i<y_Prediction.size();++i){
+              Y[i][0]=y_Prediction[i];
+          }
+
+          gadget.matrix_to_csv( Y, predictDataSetPath.toStdString()+".y");
+
+          QString msg= "Prediction finished ! \n The result has been saved to  <"+ predictDataSetPath+".y>";
+          ShowMsgRequest(AiMsg(Ok,MSG_TYPE_TEXT,0,msg)  );
+
+          SendEvalutionData(Data, y_Prediction);
+
+     }else{
+          if( predictDataSetPath.size()==0 )  ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,"You have not specified input data!") );
+          if( !svmModel  )  ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,"Empty model! ") );
+
+     }
+
+}
+void AiSVM::predict()
+{
+     task=&AiSVM:: DoPredict ;  //让线程执行训练数据的函数
+     start();
+}
 void AiSVM:: setTrainingData()
 {
     if(trainingDataSetPath.size()>0)
@@ -27,20 +114,25 @@ void AiSVM:: setTrainingData()
                 ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,message) );
             }
         }
-
     }else{
          ++trainningAble;
          QString message ="Fail to get file path!";
          ShowMsgRequest(AiMsg(Ok,MSG_TYPE_TEXT,0,message) );
     }
+}
+void AiSVM::evaluate(){
 
 }
+void AiSVM::DoEvaluate()
+{
 
+}
 STATUS AiSVM:: setTrainingData(string fileName)
 {
     ///////////////////////////////////////////////////////////////////////
     ifstream fin(fileName);
-     if (!fin){
+     if (!fin)
+     {
             cout << "Error in opening file <" << fileName << ">. ABORT!";
             AiMsg msg(Error,MSG_TYPE_TEXT,INT_MIN,QString("Error in opening file <"+  QString::fromStdString(fileName)  +">. ABORT!")) ;
            emit ShowMsgRequest(msg);
@@ -48,7 +140,7 @@ STATUS AiSVM:: setTrainingData(string fileName)
             return Error;
       }
        string line;
-       int i = 0;
+
        vector<vector<double>> Data;
         while (fin.good() )
         {
@@ -73,8 +165,8 @@ STATUS AiSVM:: setTrainingData(string fileName)
 
         fin.close();
         /////////////////////////////////////////
-        int M = Data.size();
-        int n = Data[0].size();
+        int M = Data.size();  sampleNums=M;
+        int n = Data[0].size();FeatureNums=n-1;
         svmProb->l = M;
         svmProb->y = new double[svmProb->l];
         svmProb->x = new svm_node*[svmProb->l];
@@ -92,7 +184,6 @@ STATUS AiSVM:: setTrainingData(string fileName)
             svmProb->y[i] = Data[i][j];
         }
         ModelStatus=TRAINDATA_SET;
-
     return Ok;
 }
 void AiSVM::initDefaultParams()

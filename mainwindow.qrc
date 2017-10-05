@@ -27,5 +27,10 @@
         <file>Images/Figure.png</file>
         <file>Images/Run.png</file>
         <file>Images/Check.png</file>
+        <file>Images/WarningMsg.png</file>
+        <file>Images/ErrorMsg.png</file>
+        <file>Images/NormalMsg.png</file>
+        <file>Images/TextFileLogo.png</file>
+        <file>Images/TextFileLogo1.png</file>
     </qresource>
 </RCC>
