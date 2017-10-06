@@ -14,7 +14,8 @@ QListWidgetItem* BLLMesgManager::getItemWith(const AiMsg & msg)
 {
     //generate an item with given message
     QString msgCont;
-    for( auto c:msg.Content)  msgCont.append(c);
+    for( auto c:msg.Content)
+        msgCont.append(c);
      QListWidgetItem* MessageItem=new QListWidgetItem(msgCont,this);
      switch(msg.Status)
      {
@@ -34,12 +35,9 @@ QListWidgetItem* BLLMesgManager::getItemWith(const AiMsg & msg)
 }
  void BLLMesgManager::RecvAMessage(AiMsg msg)
  {
-        cout<<" RecvAMessage(AiMsg msg)"<<endl;
          if(msg.Type==MSG_TYPE_TEXT) //接受一个文本消息
          {
-                //addItem( "The curent thread : "+QString::number( (long) msg.senderId ) );
                 addItem(getItemWith(msg));
 
          }
-
  }

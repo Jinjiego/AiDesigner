@@ -37,18 +37,23 @@ public:
         {
             this->learner=learner;
             this->svm=(AiSVM*)learner  ;
+            connect(svm,SIGNAL(freshProjectManagerTreeRequest()),this,SIGNAL(freshProjectManagerTreeRequest() ) );
 
         }
         void init();
         void init2();
-        void train(){ if(svm) svm->train();    }
+        void train()
+        {
+            if(svm)     svm->startUp();
+
+        }
         void updateParamFromUI();
-
-
 signals:
         void getActivateProjectTreeLeafRequest(int id);
+        void freshProjectManagerTreeRequest();
 
 public slots:
+
          void receive_trainingData(QString dir,QStringList path);
 
 private:

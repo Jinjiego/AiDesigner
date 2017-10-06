@@ -146,19 +146,22 @@ void MainWindow::setupASvmInstance()
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
 
-        BLL_SVM_UI *t=  new BLL_SVM_UI();
+        BLL_SVM_UI *bllsvmui=  new BLL_SVM_UI();
 
-        connect(t,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
-        connect(t, SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
-        connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), t ,SLOT(receive_trainingData(QString,  QStringList))   );
+        connect(bllsvmui ,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
+        connect(bllsvmui , SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
+        connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), bllsvmui ,SLOT(receive_trainingData(QString,  QStringList))   );
+        connect(bllsvmui, SIGNAL(freshProjectManagerTreeRequest()),ProjectTreeViewer,SLOT(freshProjectManagerTree()) );
 
-        t->setLearner(newSvm);
-        svm->Ui=t;
 
-        t->init();
+        bllsvmui->setLearner(newSvm);
+        svm->Ui=bllsvmui;
+
+        bllsvmui->init();
+
         LearnerList->append(svm);
 
-        CentralTabWidget->add2TabList(TabData(t,TAB_GUI_LEARNER,"dgjio","SVM setup") );
+        CentralTabWidget->add2TabList(TabData(bllsvmui ,TAB_GUI_LEARNER,"dgjio","SVM setup") );
 
 
 }
@@ -185,10 +188,9 @@ void MainWindow:: RunModel()
         GuiLearner * lnr= dynamic_cast<GuiLearner*> (CentralTabWidget->currentWidget() ) ;
         if(lnr && lnr->learner)
         {
-                lnr->learner->train();
+                lnr->learner->startUp();
         }
    }
-
 
 }
 

@@ -33,29 +33,28 @@ class AiSVM:public Learner
     STATUS  ReadDataMatrix(const string &fileName,vector<vector<double>> &Data,int colNums);
     //*****************************
     void train();
-    void DoTrain();
     void  setTrainingData();
     //*****************************
     void   predict();
-    void   DoPredict();
     void evaluate();
-    void DoEvaluate();
-
+    void    startUp()
+    {
+           start();
+    }
     void run()
     {
-        if(task)
-        {
-             (this->*task) ();
-             task=&AiSVM::DoPredict;
-             (this->*task) ();
-
-        }
-
+        task=&AiSVM::train;
+          (this->*task) ();
+        task= &AiSVM::predict;
+         (this->*task) ();
     }
+signals:
+       void freshProjectManagerTreeRequest();
 
 signals:
      void  SendEvalutionData(vector<vector<double>> testData,vector<double> y_prediction);
      void  SendEvalutionData(int data);
+
 public:
 
     int ModelStatus;
@@ -68,7 +67,6 @@ public:
     svm_problem *svmProb;
     svm_parameter *svmParams;
     svm_model *svmModel;
-
 
 private:
       void (AiSVM::*task) ();

@@ -12,17 +12,12 @@ void AiSVM::freeMemory()
     }
 }
 
-void AiSVM:: DoTrain()
+void  AiSVM:: train()
 {
     if(trainningAble==0)     /// everything is ok then to run!
           svmModel= svm_train(svmProb,svmParams);
     else
          emit ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,QString("Not Ready! ") ));
-}
-void  AiSVM:: train()
-{
-    task=&AiSVM:: DoTrain;  //让线程执行训练数据的函数
-    start();
 
 }
 STATUS AiSVM:: ReadDataMatrix(const string &fileName,vector<vector<double>> &Data,int colNums)
@@ -54,7 +49,7 @@ STATUS AiSVM:: ReadDataMatrix(const string &fileName,vector<vector<double>> &Dat
         }
         fin.close();
 }
-void AiSVM::DoPredict()
+void AiSVM::predict()
 {
      if(predictDataSetPath.size()>0 && svmModel )
      {
@@ -83,10 +78,13 @@ void AiSVM::DoPredict()
 
           gadget.matrix_to_csv( Y, predictDataSetPath.toStdString()+".y");
 
+          freshProjectManagerTreeRequest();
+
           QString msg= "Prediction finished ! \n The result has been saved to  <"+ predictDataSetPath+".y>";
           ShowMsgRequest(AiMsg(Ok,MSG_TYPE_TEXT,0,msg)  );
 
           SendEvalutionData(Data, y_Prediction);
+
 
      }else{
           if( predictDataSetPath.size()==0 )  ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,"You have not specified input data!") );
@@ -95,11 +93,7 @@ void AiSVM::DoPredict()
      }
 
 }
-void AiSVM::predict()
-{
-     task=&AiSVM:: DoPredict ;  //让线程执行训练数据的函数
-     start();
-}
+
 void AiSVM:: setTrainingData()
 {
     if(trainingDataSetPath.size()>0)
@@ -123,10 +117,7 @@ void AiSVM:: setTrainingData()
 void AiSVM::evaluate(){
 
 }
-void AiSVM::DoEvaluate()
-{
 
-}
 STATUS AiSVM:: setTrainingData(string fileName)
 {
     ///////////////////////////////////////////////////////////////////////

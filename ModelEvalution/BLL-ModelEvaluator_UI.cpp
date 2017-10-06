@@ -16,6 +16,9 @@ void ModelEvaluator_UI::receive_evalData(int data ){
 
 void ModelEvaluator_UI::receive_evalData(vector<vector<double>> testData,vector<double> y_prediction)
 {
+//  testData 为测试集数据
+   // y_prediction 为模型输出
+
 
     TestDataMatrix=testData;
      sampleNums=TestDataMatrix.size();

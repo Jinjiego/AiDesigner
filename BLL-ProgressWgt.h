@@ -14,7 +14,8 @@ public:
     {
         activatedProject=new QTreeWidgetItem(parent, QStringList(activatedProjectName));
         activatedProject->setIcon(0,QIcon(":/res/Images/logo.png"));
-        MessageItem=new QTreeWidgetItem(QStringList("Parparing ..."));
+        MessageItem=new QTreeWidgetItem(QStringList("Runing ..."));
+
         progressItem=new QTreeWidgetItem();
         progressBar=new QProgressBar();
         progressBar->setMaximumWidth(300);

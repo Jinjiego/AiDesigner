@@ -27,6 +27,7 @@ signals:
      int trainningAble;
 
 public:
+     virtual void startUp(){}
       virtual  void  train(){}     // training
       virtual  void  predict(){}   // predtion
       virtual void   evaluate(){}  //evaluate
