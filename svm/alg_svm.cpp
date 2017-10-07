@@ -53,7 +53,6 @@ static void SendMessage(const char *type,const char *message){
             if(  0== strcmp("Progress",type)    ){
                  msg.Type=MSG_TYPE_NUM;
                  msg.Num=atoi(message);
-
             } else
             {
                 cout<<">>>"<<type<<endl;

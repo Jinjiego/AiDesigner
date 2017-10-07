@@ -146,20 +146,21 @@ void MainWindow::setupASvmInstance()
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
         connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
 
-        BLL_SVM_UI *bllsvmui=  new BLL_SVM_UI();
+        GuiLearner *bllsvmui=  new BLL_SVM_UI(nullptr,newSvm);
+
 
         connect(bllsvmui ,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
         connect(bllsvmui , SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
         connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), bllsvmui ,SLOT(receive_trainingData(QString,  QStringList))   );
+
         connect(bllsvmui, SIGNAL(freshProjectManagerTreeRequest()),ProjectTreeViewer,SLOT(freshProjectManagerTree()) );
 
-
-        bllsvmui->setLearner(newSvm);
         svm->Ui=bllsvmui;
 
-        bllsvmui->init();
+        bllsvmui->initDatasetItems(0);
 
         LearnerList->append(svm);
+
 
         CentralTabWidget->add2TabList(TabData(bllsvmui ,TAB_GUI_LEARNER,"dgjio","SVM setup") );
 

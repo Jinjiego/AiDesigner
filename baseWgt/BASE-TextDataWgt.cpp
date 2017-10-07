@@ -7,7 +7,7 @@ TextDataWgt::TextDataWgt()
     setUtf8(true);
     //setLexer(new QsciLexer());
     zoomIn(4);
-
+     this->setStyleSheet("border:none;");
     setMarginBackgroundColor(1, QColor("#0000ff"));
     setMarginWidth(1,"000000");
 

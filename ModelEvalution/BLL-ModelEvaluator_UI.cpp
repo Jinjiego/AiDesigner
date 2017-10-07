@@ -71,6 +71,7 @@ void ModelEvaluator_UI:: showEvalResults()
        QTableWidgetItem *truth = new QTableWidgetItem();
        truth->setText("truth");
        ConfusionMatrixTable->setItem(2,0,truth);
+       ConfusionMatrixTable->setBorderVisiable(false);
 
        this->addTab(ConfusionMatrixTable,QIcon(),"Confusion Matrix");
        setCurrentWidget(ConfusionMatrixTable);

@@ -34,7 +34,7 @@ public slots:
         void  CloseTab(int index);
 
 protected:
-        QTableWidget * ConfusionMatrixTable;
+        DataTableWgt * ConfusionMatrixTable;
 private:
 
 };

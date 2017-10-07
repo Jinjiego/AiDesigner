@@ -1,62 +1,22 @@
 #include "BLL_SVM_UI.h"
 
-BLL_SVM_UI::BLL_SVM_UI(QWidget *parent) : GuiLearner(parent)
+BLL_SVM_UI::BLL_SVM_UI(QWidget *parent, Learner * svmlearner) : GuiLearner(parent)
 {
 
          svm=nullptr;
+         if(svmlearner)
+         {
+            this->learner=svmlearner;
+            this->svm=(AiSVM*)learner  ;
+             connect(svm,SIGNAL(freshProjectManagerTreeRequest()),this,SIGNAL(freshProjectManagerTreeRequest() ) );
+             qRegisterMetaType<vector<vector<double> > >("vector<vector<double> >");
+             qRegisterMetaType<vector<double> >("vector<double>");
+             connect(svm,SIGNAL(SendEvalutionData(vector<vector<double> >,vector<double>)),
+                           evalWgt,SLOT(receive_evalData(vector<vector<double> >,vector<double>)  )  );
+         }
 
-
-
-}
-void BLL_SVM_UI::init(){
-
-     cellfont =new QFont("Times New Roman",12);
-
-      initTrainingDatasetItem(0);
-     initParamTable();
-     initTrainDataTable();
-     initTestDataTable();
-     cout<< " The current object of type BLL_SVM_UI is at " <<QThread::currentThreadId()<<endl;
-     //*********create model tree****************
-     QTreeWidget  * centralWidget= new QTreeWidget(this);
-     centralWidget->setHeaderHidden(true);
-
-     QTreeWidgetItem *  svmModel =new QTreeWidgetItem(centralWidget,QStringList()<<"svm Model");
-     svmModel->setFont(0,QFont("Times New Roman",13) );
-     QTreeWidgetItem *  TrainDataPar =new QTreeWidgetItem(svmModel,QStringList()<<"training Data set");
-     TrainDataPar->setFont(0,QFont("Times New Roman",13)  );
-     QTreeWidgetItem *  TrainDataNode =new QTreeWidgetItem(TrainDataPar);
-
-     QTreeWidgetItem *  TestDataParent =new QTreeWidgetItem(svmModel,QStringList()<<"Test Data");
-       TestDataParent->setFont(0,QFont("Times New Roman",13)  );
-     QTreeWidgetItem *  TestDataNode  =new  QTreeWidgetItem(TestDataParent);
-     QTreeWidgetItem *  paraTbParent =new QTreeWidgetItem(svmModel,QStringList()<< "Parameters");
-     paraTbParent->setFont(0,QFont("Times New Roman",13)  );
-     QTreeWidgetItem *  paraTbNode =new QTreeWidgetItem(paraTbParent);
-
-     QTreeWidgetItem *  evalWgtPar =new QTreeWidgetItem(svmModel,QStringList()<<"Model Evalution");
-      evalWgtPar->setFont(0,QFont("Times New Roman",13)  );
-     QTreeWidgetItem *  evalWgtNode =new QTreeWidgetItem(evalWgtPar);
-
-     svmModel->setExpanded(true);
-     //*********set model tree****************
-     centralWidget->setItemWidget(TrainDataNode,0,TrainingDataTable);
-     centralWidget->setItemWidget(paraTbNode,0,paramsTable   );
-     centralWidget->setItemWidget(TestDataNode, 0 ,TestDataTable );
-
-     evalWgt= new  ModelEvaluator_UI();
-     centralWidget->setItemWidget(evalWgtNode,0,evalWgt);
-       //*********add model tree into the window****************
-
-     setCentralWidget(centralWidget);
-
-     //********** 显示模型的评测结果************************
-     qRegisterMetaType<vector<vector<double> > >("vector<vector<double> >");
-     qRegisterMetaType<vector<double> >("vector<double>");
-
-     connect(svm,SIGNAL(SendEvalutionData(vector<vector<double> >,vector<double>)),
-                   evalWgt,SLOT(receive_evalData(vector<vector<double> >,vector<double>)  )  );
-
+         initParamTable();
+         this->init();
 
 
 }
@@ -66,59 +26,13 @@ void BLL_SVM_UI::init2()
     //zoomTable=new zoomAbleTableWgt(this);
 }
 
-void BLL_SVM_UI:: initTrainingDatasetItem(int row)
-{
-       emit getActivateProjectTreeLeafRequest( 0 );
-
-}
-void BLL_SVM_UI:: receive_trainingData(QString dir, QStringList path)
-{
-        Dir=dir;
-        trainingDataItem =new AiQComboBox();
-        trainingDataItem->addItems(path);
-        TestDataItems=new AiQComboBox();
-        TestDataItems->addItems(path);
-}
-
-void BLL_SVM_UI:: initTestDataTable()
-{
-    TestDataTable=new DataTableWgt(1,3);
-    TestDataTable->setColumnWidth(0,200);
-    TestDataTable->setColumnWidth(1,300);
-    TestDataTable->setColumnWidth(2,600);
-    TestDataTable->setMaximumHeight(100);
-    TestDataTable->setHorizontalHeaderLabels(QStringList()<<"Parameters Name"<<"Values"<<"Comment" );
-    // initTrainingDatasetItem( 0 );
-    if(TestDataItems)
-    {
-        QTableWidgetItem * var =new QTableWidgetItem("Test data");
-        QTableWidgetItem * Comment =new QTableWidgetItem("Test Data set");
-        addTableRow(TestDataTable, 0,var,TestDataItems,Comment);
-    }
-    setTableAttributes(TestDataTable);
-}
-void BLL_SVM_UI:: initTrainDataTable()
-{
-    TrainingDataTable=new DataTableWgt(1,3);
-    TrainingDataTable->setColumnWidth(0,200);
-    TrainingDataTable->setColumnWidth(1,300);
-    TrainingDataTable->setColumnWidth(2,600);
-    TrainingDataTable->setMaximumHeight(100);
-    TrainingDataTable->setHorizontalHeaderLabels(QStringList()<<"Parameters Name"<<"Values"<<"Comment" );
-    if(trainingDataItem)
-    {
-        QTableWidgetItem * var =new QTableWidgetItem("Training data");
-        QTableWidgetItem * Comment =new QTableWidgetItem("Training Data set");
-        addTableRow(TrainingDataTable, 0,var,trainingDataItem,Comment);
-    }
-    setTableAttributes(TrainingDataTable);
-}
-
 void BLL_SVM_UI:: initParamTable()
 {
-
     paramsTable=new DataTableWgt();
-    paramsTable->setMinimumHeight(450);
+
+    paramsTable->setStyleSheet("border:none;");
+
+
     int start=0;
     paramsTable->setColumnCount(3);
     paramsTable->setRowCount(start+ 12);
@@ -128,13 +42,12 @@ void BLL_SVM_UI:: initParamTable()
     paramsTable->setColumnWidth(0,200);
      paramsTable->setColumnWidth(1,300);
       paramsTable->setColumnWidth(2,600);
+
+
+
   //  paramsTable->horizontalHeader()->setStretchLastSection(true);
  //   paramsTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
     // paramsTable->setSpan(0,0,0,2);
-    ///************************************
-    ///  0 设置训练集
-    /// *************************************
-
 
     ///************************************
     ///  1 求解问题类型
@@ -273,49 +186,8 @@ void BLL_SVM_UI:: initParamTable()
     // svmParams->weight = NULL;    //样本权重
     // svmParams->weight_label = NULL;    //类别权重
 
-    //*********************************************
-    //** set font
-    //*********************************************
     setTableAttributes(paramsTable);
-
-
-}
-void BLL_SVM_UI::setTableAttributes( DataTableWgt * Table){
-
-     int m= Table->rowCount();
-     int n=Table->columnCount();
-
-    for(int i=0;i<m;++i)
-        for(int j=0;j<n;++j){
-             QTableWidgetItem *itemWgt= Table->item(i,j);
-             if(itemWgt){
-                      itemWgt->setTextAlignment(Qt::AlignLeft);
-                      itemWgt->setFont(*cellfont);
-             }
-        }
-    Table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
-    Table->horizontalHeaderItem(0)->setFont(*cellfont);
-    Table->horizontalHeaderItem(1)->setTextAlignment(Qt::AlignLeft);
-    Table->horizontalHeaderItem(1)->setFont(*cellfont);
-    Table->horizontalHeaderItem(2)->setTextAlignment(Qt::AlignLeft);
-    Table->horizontalHeaderItem(2)->setFont(*cellfont);
-
-}
-
-
-
-void BLL_SVM_UI::addTableRow(DataTableWgt * table,int row,QTableWidgetItem*var,QTableWidgetItem*val,QTableWidgetItem*comment )
-{
-      table->setItem(row,0,var);
-      table->setItem(row,1,val);
-      table->setItem(row,2,comment);
-
-}
-void BLL_SVM_UI::addTableRow(DataTableWgt * table,int row,QTableWidgetItem*var,QWidget *val,QTableWidgetItem*comment )
-{
-      table->setItem(row,0,var);
-      table->setCellWidget(row,1,val);
-      table->setItem(row,2,comment);
+    paramsTable->verticalHeader()->setVisible(false);
 
 }
 
@@ -323,8 +195,8 @@ void  BLL_SVM_UI:: updateParamFromUI()
 {
              if(svm && svm->svmParams){
                     svm->setrainningAble(0);
-                    svm->trainingDataSetPath=Dir+ trainingDataItem->currentText();
-                    svm->predictDataSetPath=Dir+TestDataItems->currentText();
+                    svm->trainingDataSetPath=ActivateProjectDir+ trainingDataItem->currentText();
+                    svm->predictDataSetPath=ActivateProjectDir+TestDataItems->currentText();
 
                     //*******************************************
                     svm->svmParams->svm_type = svm_type_comb->currentIndex();

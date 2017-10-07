@@ -78,6 +78,7 @@ protected :
      void  closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint);
 
 private:
+             void FreshTreeByFileSys(TreeItem *root,QString PathRoot);
 
              QTreeWidgetItem*  openProject(QString RootPath);
              void    WalkPath(QString PathRoot,TreeItem *TreeRoot );

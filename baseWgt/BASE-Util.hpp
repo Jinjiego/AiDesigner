@@ -169,7 +169,6 @@ public:
      void svmSendMessage(AiMsg msg)
    {
            ShowMsgRequest(msg);
-           cout<<"fuck!"<<endl;
    }
 
 };

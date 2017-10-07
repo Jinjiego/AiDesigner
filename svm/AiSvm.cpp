@@ -82,7 +82,6 @@ void AiSVM::predict()
 
           QString msg= "Prediction finished ! \n The result has been saved to  <"+ predictDataSetPath+".y>";
           ShowMsgRequest(AiMsg(Ok,MSG_TYPE_TEXT,0,msg)  );
-
           SendEvalutionData(Data, y_Prediction);
 
 

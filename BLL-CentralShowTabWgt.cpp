@@ -6,7 +6,7 @@ CentralShowTabWgt::CentralShowTabWgt()
 {
 
     extern int jinjiego;
-    int a=jinjiego;
+
     Plot* plot= new Plot();
     TabList.append(TabData(plot,"Sin","figure"));
     plot->start();

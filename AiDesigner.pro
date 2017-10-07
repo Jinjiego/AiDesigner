@@ -29,7 +29,6 @@ HEADERS += \
     baseWgt/BASE-TextDataWgt.h \
     baseWgt/BASE-Type.hpp \
     baseWgt/BASE-Util.hpp\
-    Solvers/Learner.hpp \
     CplusHeader.h \
     Common.h \
     GlobalVars.h \
@@ -49,7 +48,6 @@ HEADERS += \
     baseWgt/BASE-Type.hpp \
     baseWgt/BASE-Util.hpp \
     baseWgt/BASE-zoomAbleTableWgt.h \
-    Solvers/Learner.hpp \
     svm/AiSvm.h \
     svm/alg_svm.h \
     svm/BLL_SVM_UI.h \
@@ -66,7 +64,8 @@ HEADERS += \
     Gui-toolbar.h \
     ModelEvalution/ModelEvaluate1.h \
     ModelEvalution/alg-modelevaluate.h \
-    ModelEvalution/BLL-ModelEvaluator_UI.h
+    ModelEvalution/BLL-ModelEvaluator_UI.h \
+    Solvers/Learner.h
 
 
 SOURCES += \
@@ -121,7 +120,8 @@ SOURCES += \
     Gui-toolbar.cpp \
     main.cpp \
     ModelEvalution/alg-modelevaluate.cpp \
-    ModelEvalution/BLL-ModelEvaluator_UI.cpp
+    ModelEvalution/BLL-ModelEvaluator_UI.cpp \
+    Solvers/LearnerUI.cpp
 
 build_all:!build_pass {
     CONFIG -= build_all

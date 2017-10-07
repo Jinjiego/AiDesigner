@@ -22,54 +22,26 @@ class BLL_SVM_UI : public GuiLearner
 {
     Q_OBJECT
 public:
-        explicit BLL_SVM_UI(QWidget *parent = nullptr);
+        explicit BLL_SVM_UI(QWidget *parent = nullptr, Learner * svmlearner=nullptr);
 
-        DataTableWgt * paramsTable,*TrainingDataTable ,*TestDataTable, *EvalutionTable;
-        ModelEvaluator_UI  *evalWgt;
-        zoomAbleTableWgt *zoomTable;
 
         AiSVM * getSVMInstance(){return svm;}
-         void addTableRow(DataTableWgt * table,int row,QTableWidgetItem*var,QTableWidgetItem*val,QTableWidgetItem*comment );
-         void addTableRow( DataTableWgt * table ,  int row,QTableWidgetItem*var,QWidget *val,QTableWidgetItem*comment );
-         void setTableAttributes( DataTableWgt * Table);
 
-        void setLearner(Learner *learner)
-        {
-            this->learner=learner;
-            this->svm=(AiSVM*)learner  ;
-            connect(svm,SIGNAL(freshProjectManagerTreeRequest()),this,SIGNAL(freshProjectManagerTreeRequest() ) );
-
-        }
-        void init();
         void init2();
         void train()
         {
-            if(svm)     svm->startUp();
-
+            if(svm)    svm->startUp();
         }
         void updateParamFromUI();
 signals:
-        void getActivateProjectTreeLeafRequest(int id);
         void freshProjectManagerTreeRequest();
-
-public slots:
-
-         void receive_trainingData(QString dir,QStringList path);
-
 private:
          AiQComboBox * svm_type_comb,*kernel_type_comb ,*cache_size_comb,*probability_comb;
 
          QLineEdit  * degree_linedit,*coef0_linedit,*gamma_linedit,*nu_linedit,*C_linedit,*eps_linedit,*p_linedit,*shrinking_linedit,*nr_weight_linedit;
 
-         AiQComboBox * trainingDataItem,*TestDataItems;
-         QString Dir;
-
-        AiSVM * svm;   //这是一个辅助指针,基类中有一个Learner 指针
-        QFont  *cellfont;
-        void initTrainingDatasetItem(int row);
-        void initParamTable();
-        void initTestDataTable();
-        void initTrainDataTable();
+         AiSVM * svm;   //这是一个辅助指针,基类中有一个Learner 指针
+         void initParamTable();
 
 
 };

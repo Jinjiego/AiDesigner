@@ -14,9 +14,10 @@ public:
      DataTableWgt(){}
      DataTableWgt(int row,int col);
     void setCellContent(int row,int col,QString content);
-
-
-
+    void setBorderVisiable(bool visiable=true)
+    {
+             if(!visiable) this->setStyleSheet("border:none;");
+    }
 
 };
 

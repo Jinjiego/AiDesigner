@@ -7,7 +7,7 @@
 #include "baseWgt/BASE-Gadget.h"
 
 #include "baseWgt/BASE-Type.hpp"
-#include "Solvers/Learner.hpp"
+#include "Solvers/Learner.h"
 #define TRAINDATA_SET  1
 #define  PARAM_SET 2
 #define  SOLVED  4
@@ -49,11 +49,9 @@ class AiSVM:public Learner
          (this->*task) ();
     }
 signals:
-       void freshProjectManagerTreeRequest();
 
-signals:
-     void  SendEvalutionData(vector<vector<double>> testData,vector<double> y_prediction);
-     void  SendEvalutionData(int data);
+       void freshProjectManagerTreeRequest();
+       void  SendEvalutionData(vector<vector<double> >,vector<double>);
 
 public:
 

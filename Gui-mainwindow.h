@@ -97,8 +97,7 @@ class MainWindow : public QMainWindow
     QDockWidget * CentralDockWidget;
     CentralShowTabWgt *CentralTabWidget;
 
-
-     QList<LearnerUI* >  *LearnerList;   //用以管理学习器,使用链表管理
+    QList<LearnerUI* >  *LearnerList;   //用以管理学习器,使用链表管理
 
 
 public:

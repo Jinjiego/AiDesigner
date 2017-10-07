@@ -177,10 +177,12 @@ void BLLProjectsManagerTree::contextMenuEvent(QContextMenuEvent *event)
  void BLLProjectsManagerTree::freshProjectManagerTree()
  {
           cout<<"freshProjectManagerTree"<< endl;
+
  }
-void FreshTreeByFileSys(TreeItem *root,)
+void BLLProjectsManagerTree::FreshTreeByFileSys(TreeItem *root,QString PathRoot)
 {
     QDir dir(PathRoot);
+   /*
     for(QFileInfo fileInfo:dir.entryInfoList())
     {
           if(fileInfo.isFile() ){
@@ -195,6 +197,8 @@ void FreshTreeByFileSys(TreeItem *root,)
           }
 
      }//for
+
+*/
 
 }
 void  BLLProjectsManagerTree:: DataShowAsTable()

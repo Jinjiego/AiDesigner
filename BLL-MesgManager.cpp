@@ -38,6 +38,5 @@ QListWidgetItem* BLLMesgManager::getItemWith(const AiMsg & msg)
          if(msg.Type==MSG_TYPE_TEXT) //接受一个文本消息
          {
                 addItem(getItemWith(msg));
-
          }
  }

@@ -32,5 +32,8 @@
         <file>Images/NormalMsg.png</file>
         <file>Images/TextFileLogo.png</file>
         <file>Images/TextFileLogo1.png</file>
+        <file>Images/DropArrow.png</file>
+        <file>Images/Drop_Arrow.png</file>
+        <file>Images/DropArrow1.png</file>
     </qresource>
 </RCC>
