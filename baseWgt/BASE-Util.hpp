@@ -53,7 +53,7 @@ class UtilReadTextFile:public QThread
 Q_OBJECT
 public:
     UtilReadTextFile(){ }
-    ~UtilReadTextFile(){ }
+    ~UtilReadTextFile(){}
     void ReadTextFileFrom(QString fullpath,TextDataWgt  *TextTab)
     {
         fullPath=fullpath;
@@ -66,6 +66,11 @@ public:
                  anyTab=tableTab;
                  task=&UtilReadTextFile::ParseText2Table;
                  start();
+    }
+    void clean(){
+         textTab=nullptr;
+         anyTab=nullptr;
+
     }
     void ParseText2Table()
     {
@@ -141,7 +146,9 @@ public:
             {
                 cout<<"Thread is runing to open "<<fullPath.toStdString()<<endl;
                 (this->*task)  (); //运行任务
-                task=nullptr;
+                task=&UtilReadTextFile::clean;
+                (this->*task)  ();
+
             }
 
     }

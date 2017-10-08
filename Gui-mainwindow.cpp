@@ -135,6 +135,14 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
      setupASvmInstance();
 
 }
+MainWindow::~MainWindow(){
+     delete ProjectTreeViewer;   delete ProjectDockWidget;
+     delete messagesManager; delete MessagesDockWidget;
+     delete progressWgtManager;delete ProgressDockWidget;
+
+
+
+}
 void MainWindow::setupASvmInstance()
 {
          LearnerUI *svm=new LearnerUI;
@@ -875,3 +883,5 @@ void MainWindow::destroyDockWidget(QAction *action)
     if (destroyDockWidgetMenu->isEmpty())
         destroyDockWidgetMenu->setEnabled(false);
 }
+
+

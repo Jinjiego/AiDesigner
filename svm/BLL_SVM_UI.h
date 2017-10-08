@@ -23,7 +23,7 @@ class BLL_SVM_UI : public GuiLearner
     Q_OBJECT
 public:
         explicit BLL_SVM_UI(QWidget *parent = nullptr, Learner * svmlearner=nullptr);
-
+        ~BLL_SVM_UI();
 
         AiSVM * getSVMInstance(){return svm;}
 

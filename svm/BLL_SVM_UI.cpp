@@ -20,7 +20,14 @@ BLL_SVM_UI::BLL_SVM_UI(QWidget *parent, Learner * svmlearner) : GuiLearner(paren
 
 
 }
+BLL_SVM_UI::~BLL_SVM_UI(){
+           delete  svm_type_comb ; delete kernel_type_comb;
+           delete cache_size_comb;delete  probability_comb;
+           delete  degree_linedit;delete  coef0_linedit;
+           delete  gamma_linedit;delete nu_linedit;
+           delete C_linedit;delete eps_linedit;delete p_linedit;delete shrinking_linedit;delete nr_weight_linedit;
 
+}
 void BLL_SVM_UI::init2()
 {
     //zoomTable=new zoomAbleTableWgt(this);

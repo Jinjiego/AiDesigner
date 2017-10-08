@@ -26,7 +26,9 @@ class AiSVM:public Learner
         trainningAble=0;
         libsvm::svm_Reportor=new svmReportor;
     }
-    ~AiSVM(){ freeMemory();}
+    ~AiSVM(){
+        freeMemory();
+    }
     STATUS  setTrainingData(string fileName);
     void initDefaultParams();
     void freeMemory();

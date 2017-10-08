@@ -103,7 +103,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(const QMap<QString, QSize> &customSizeHints,
                 QWidget *parent = 0, Qt::WindowFlags flags = 0);
-
+    ~MainWindow();
 protected:
     void showEvent(QShowEvent *event);
 
