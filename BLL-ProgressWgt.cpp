@@ -26,6 +26,10 @@ void BLLProgressWgt:: RecvAMessage(AiMsg msg )
       {
              activatedProjectRoot-> setExpanded(true);
              activatedProjectTree->progressBar->setValue(msg.Num);
+             if(msg.Num ==100 ){
+                  activatedProjectTree->MessageItem->setText(0,"Finished");
+             }
+
       }
 }
 

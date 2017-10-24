@@ -503,7 +503,7 @@ void ColorSwatch::tabInto(QAction *action)
 void ColorSwatch::contextMenuEvent(QContextMenuEvent *event)
 {
     event->accept();
-    QMessageBox::information(NULL, QString("Debug Promote" ), QString("right"));
+    //QMessageBox::information(NULL, QString("Debug Promote" ), QString("right"));
 
     menu->exec(event->globalPos());
 }

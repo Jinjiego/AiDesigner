@@ -19,7 +19,6 @@ public:
     void add2TabList(const TabData& tabData);
     TAB_TYPE  getCurTabType() ;
 
-
 protected:
 signals:
       void ShowMsgRequest(QString Type,QString message);

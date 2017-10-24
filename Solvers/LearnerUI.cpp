@@ -2,13 +2,16 @@
 
  GuiLearner::GuiLearner()
  {
+
+
      initVar();
+
  }
 void GuiLearner:: initVar()
 {
      this->setStyleSheet("border:none;");
      cellfont =new QFont("Times New Roman",12);
-
+     paramsTable=NULL;
      TestDataTable=new DataTableWgt(1,3);
 
      TrainingDataTable=new DataTableWgt(1,3);
@@ -32,32 +35,31 @@ void GuiLearner::init()
     QTreeWidget  * centralWidget= new QTreeWidget(this);
     centralWidget->setHeaderHidden(true);
 
-    QTreeWidgetItem *  svmModel =new QTreeWidgetItem(centralWidget,QStringList()<<modelName+ " Model");
-    svmModel->setFont(0,QFont("Times New Roman",13) );
-    QTreeWidgetItem *  TrainDataPar =new QTreeWidgetItem(svmModel,QStringList()<<"training Data set");
+    QTreeWidgetItem *  Model =new QTreeWidgetItem(centralWidget,QStringList()<<modelName+ " Model");
+    Model->setFont(0,QFont("Times New Roman",13) );
+    QTreeWidgetItem *  TrainDataPar =new QTreeWidgetItem(Model,QStringList()<<"training Data set");
     TrainDataPar->setFont(0,QFont("Times New Roman",13)  );
     QTreeWidgetItem *  TrainDataNode =new QTreeWidgetItem(TrainDataPar);
 
-    QTreeWidgetItem *  TestDataParent =new QTreeWidgetItem(svmModel,QStringList()<<"Test Data");
-      TestDataParent->setFont(0,QFont("Times New Roman",13)  );
+    QTreeWidgetItem *  TestDataParent =new QTreeWidgetItem(Model,QStringList()<<"Test Data");
+     TestDataParent->setFont(0,QFont("Times New Roman",13)  );
     QTreeWidgetItem *  TestDataNode  =new  QTreeWidgetItem(TestDataParent);
-    QTreeWidgetItem *  paraTbParent =new QTreeWidgetItem(svmModel,QStringList()<< "Parameters");
+    QTreeWidgetItem *  paraTbParent =new QTreeWidgetItem(Model,QStringList()<< "Parameters");
     paraTbParent->setFont(0,QFont("Times New Roman",13)  );
     QTreeWidgetItem *  paraTbNode =new QTreeWidgetItem(paraTbParent);
 
-    QTreeWidgetItem *  evalWgtPar =new QTreeWidgetItem(svmModel,QStringList()<<"Model Evalution");
+    QTreeWidgetItem *  evalWgtPar =new QTreeWidgetItem(Model,QStringList()<<"Model Evalution");
      evalWgtPar->setFont(0,QFont("Times New Roman",13)  );
     QTreeWidgetItem *  evalWgtNode =new QTreeWidgetItem(evalWgtPar);
 
-     svmModel->setExpanded(true);
+     Model->setExpanded(true);
 
 
     //*********set model tree****************
     centralWidget->setItemWidget(TrainDataNode,0,trainingDataItem);
-    centralWidget->setItemWidget(paraTbNode,0,paramsTable   );
     centralWidget->setItemWidget(TestDataNode, 0 ,TestDataItems );
-
-    centralWidget->setItemWidget(evalWgtNode,0,evalWgt);
+    if(paramsTable)  centralWidget->setItemWidget(paraTbNode,0,paramsTable   );
+    if(evalWgt) centralWidget->setItemWidget(evalWgtNode,0,evalWgt);
       //*********add model tree into the window****************
 
     setCentralWidget(centralWidget);

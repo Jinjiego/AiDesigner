@@ -37,6 +37,8 @@ AiQComboBox::AiQComboBox()
                          top: 1px;\
                          left: 1px;\
                      }");
+                    setMaximumWidth(200);
+
 
 }
 void AiQComboBox:: wheelEvent(QWheelEvent *e){
@@ -75,23 +77,4 @@ QComboBox{subcontrol-origin: padding;
                              height:17px;
                              background:white ; }
                    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 */

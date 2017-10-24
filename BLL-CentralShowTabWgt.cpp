@@ -28,12 +28,15 @@ CentralShowTabWgt::CentralShowTabWgt()
     connect(reader,SIGNAL( ShowMsgRequest(QString,QString)) ,this,SLOT( transpondMsg(QString ,QString )  )     );//SLOT中的槽函数不要写形参
 
 }
-  void CentralShowTabWgt::add2TabList(const TabData& tabData){
+  void CentralShowTabWgt::add2TabList(const TabData& tabData)
+  {
       this-> TabList.append(tabData);
       this->addTab(  tabData.wgt,tabData.Label  );
       this->setCurrentWidget(tabData.wgt);
 
   }
+
+
 
 TAB_TYPE CentralShowTabWgt :: getCurTabType() {
            int tabIndex =currentIndex();
@@ -88,16 +91,11 @@ void CentralShowTabWgt::ShowData(QString fullpath,QString type){
             TabList.append(TabData (  aTab ,fullpath,label ));
 
             setCurrentWidget(aTab);
-
-
-
-
         }else {
 
             addTab(tab->wgt,tab->Label);
             setCurrentWidget(tab->wgt);
         }
-
     }else if("Table"==type){
 
                 DataTableWgt * tableTab=new DataTableWgt();

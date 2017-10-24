@@ -32,7 +32,8 @@ void TextDataWgt:: keyPressEvent(QKeyEvent *event)
      QsciScintilla::keyReleaseEvent(event);
  }
 
-void TextDataWgt:: wheelEvent(QWheelEvent *event){
+void TextDataWgt:: wheelEvent(QWheelEvent *event)
+{
   if( Qt::Key_Control ==PressdKey )   //按下的是Ctrl
   {
      if ( event->delta()>0 ){

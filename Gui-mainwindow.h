@@ -50,16 +50,18 @@
 #include "BLL-ParameterTab.h"
 #include "BLL-CentralShowTabWgt.h"
 #include "BLL-ProgressWgt.h"
-
 #include "Common.h"
 #include<QFileSystemModel>
 #include <QTreeWidget>
 #include <QLabel>
 #include <QIcon>
 #include <QList>
+#include "XGBoost/bll_xgboost_ui.h"
 
 #include "svm/AiSvm.h"
 #include "svm/BLL_SVM_UI.h"
+#include "Solvers/matrix.hpp"
+#include "armadillo/example1.h"
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -124,6 +126,7 @@ public slots:
     void CheckModel()  ;
    void  RunModel();
        void setupASvmInstance();
+       void setupXGboostInstance();
 private:
     void setupToolBar();
     void setupMenuBar();

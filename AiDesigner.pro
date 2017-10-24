@@ -1,12 +1,31 @@
+
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui
 TEMPLATE = app
-QT += widgets printsupport
+QT +=  printsupport
+DEFINES += QT_DEPRECATED_WARNINGS
+###############################################################
+ROOT =I:/Projects/Qt/AiDesigner
+###############################################################
+
+LIBS += -L$${ROOT}/armadillo/lib_win64 -lblas_win64_MT
+LIBS += -L$${ROOT}/armadillo/lib_win64 -llapack_win64_MT
+INCLUDEPATH += $${ROOT}/armadillo/includes
+
+###################   配置XGBoost  ###############################
+LIBS += -L$${ROOT}/XGBoost/Libs -lxgboost
+LIBS += -L$${ROOT}/XGBoost/Libs -lrabit
+#LIBS += -L$${ROOT}/XGBoost/Libs -ldmlccore  #注释掉这个库可以避免LNK 2005的错误，这个库是用来
+INCLUDEPATH += $${ROOT}/XGBoost/includes/xgboost
+QMAKE_CXXFLAGS += /openmp
 
 ####################配置QScintilla  #####################################
-ROOT =I:/Projects/Qt/AiDesigner
 
 LIBS += -L$${ROOT}/GuiLibs/QScintilla -lqscintilla2_qt5d
 INCLUDEPATH += $${ROOT}/GuiLibs/QScintilla
-############################################################
+
+#############################################################
 
 HEADERS += \
     Gui-colorswatch.h \
@@ -29,7 +48,6 @@ HEADERS += \
     baseWgt/BASE-TextDataWgt.h \
     baseWgt/BASE-Type.hpp \
     baseWgt/BASE-Util.hpp\
-    CplusHeader.h \
     Common.h \
     GlobalVars.h \
     BLL-ProgressWgt.h \
@@ -65,8 +83,12 @@ HEADERS += \
     ModelEvalution/ModelEvaluate1.h \
     ModelEvalution/alg-modelevaluate.h \
     ModelEvalution/BLL-ModelEvaluator_UI.h \
-    Solvers/Learner.h
-
+    Solvers/Learner.h \
+    XGBoost/xgboosttest.h \
+    XGBoost/MLXGBoost.h \
+    XGBoost/bll_xgboost_ui.h \
+    Solvers/matrix.hpp \
+    armadillo/example1.h
 
 SOURCES += \
     main.cpp \
@@ -121,7 +143,11 @@ SOURCES += \
     main.cpp \
     ModelEvalution/alg-modelevaluate.cpp \
     ModelEvalution/BLL-ModelEvaluator_UI.cpp \
-    Solvers/LearnerUI.cpp
+    Solvers/LearnerUI.cpp \
+   XGBoost/xgboostTest.cpp \
+    XGBoost/MLXGBoost.cpp \
+    XGBoost/bll_xgboost_ui.cpp \
+    armadillo/example1.cpp
 
 build_all:!build_pass {
     CONFIG -= build_all
@@ -135,8 +161,6 @@ RESOURCES += mainwindow.qrc
 
 target.path =$$[ProjectDir]/mainwindows
 INSTALLS += target
-
-DISTFILES +=
 
 FORMS +=
 

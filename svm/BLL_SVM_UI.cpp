@@ -15,7 +15,7 @@ BLL_SVM_UI::BLL_SVM_UI(QWidget *parent, Learner * svmlearner) : GuiLearner(paren
                            evalWgt,SLOT(receive_evalData(vector<vector<double> >,vector<double>)  )  );
          }
 
-         initParamTable();
+        initParamTable();
          this->init();
 
 
@@ -47,8 +47,8 @@ void BLL_SVM_UI:: initParamTable()
     //  paramsTable->horizontalHeader()->setVisible(false);
 
     paramsTable->setColumnWidth(0,200);
-     paramsTable->setColumnWidth(1,300);
-      paramsTable->setColumnWidth(2,600);
+    paramsTable->setColumnWidth(1,300);
+     paramsTable->setColumnWidth(2,600);
 
 
 
@@ -177,7 +177,7 @@ void BLL_SVM_UI:: initParamTable()
     probability_comb =new AiQComboBox();
      probability_comb->addItems(QStringList()<<"0"<<"1");
 
-    Comment =new QTableWidgetItem(tr(" 1 denotes  that svm will  generating probability model and 0 denotes will not ") );
+    Comment =new QTableWidgetItem(tr(" 1 denotes  that svm will  generate probability model and 0 denotes will not ") );
     addTableRow(paramsTable,start+11,var,probability_comb,Comment);
 
     ///************************************
@@ -220,6 +220,8 @@ void  BLL_SVM_UI:: updateParamFromUI()
                     svm->svmParams->nr_weight=nr_weight_linedit->text().toDouble();
                     svm->svmParams->weight=NULL;
                     svm->svmParams->weight_label=NULL;
+                    svm->ModelStatus =  svm->ModelStatus  | PARAM_SET;
+
                     QString message ="Update parameters of svm model successfully! ";
                     ShowMsgRequest(AiMsg(Ok,MSG_TYPE_TEXT,0,message) );
 

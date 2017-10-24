@@ -42,7 +42,10 @@ public:
     void setrainningAble(int flag=0){trainningAble=flag;}
 };
 
-class GuiLearner :public QMainWindow{
+
+// GuiLearner 封装了基本的交互界面
+class GuiLearner :public QMainWindow
+{
 
     Q_OBJECT
 
@@ -64,6 +67,7 @@ public:
 
     GuiLearner();
     GuiLearner(QWidget*parent):QMainWindow(parent){
+
         initVar();
     }
     void addTableRow(DataTableWgt * table,int row,QTableWidgetItem*var,QTableWidgetItem*val,QTableWidgetItem*comment );
@@ -75,6 +79,7 @@ public:
     void initTrainDataTable();
     void setTableAttributes( DataTableWgt * Table);
 
+    virtual void initParamTable(){paramsTable=NULL;}
     //
     virtual void   updateParamFromUI(){}
 protected :

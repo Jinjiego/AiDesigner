@@ -69,7 +69,7 @@ void ModelEvaluator_UI:: showEvalResults()
        pred->setText("Predicted");
        ConfusionMatrixTable->setItem(0,2,pred);
        QTableWidgetItem *truth = new QTableWidgetItem();
-       truth->setText("truth");
+       truth->setText("Actual");
        ConfusionMatrixTable->setItem(2,0,truth);
        ConfusionMatrixTable->setBorderVisiable(false);
 

@@ -1,7 +1,9 @@
 #ifndef AISVM_H
 #define AISVM_H
 #include"svm/alg_svm.h"
-#include "CplusHeader.h"
+#include <iostream>
+#include <istream>
+#include <sstream>
 #include <QThread>
 #include "baseWgt/BASE-Util.hpp"
 #include "baseWgt/BASE-Gadget.h"
@@ -12,6 +14,7 @@
 #define  PARAM_SET 2
 #define  SOLVED  4
 
+using namespace  std;
 using namespace libsvm;
 class AiSVM:public Learner
 {
@@ -29,7 +32,7 @@ class AiSVM:public Learner
     ~AiSVM(){
         freeMemory();
     }
-    STATUS  setTrainingData(string fileName);
+    virtual STATUS  setTrainingData(string fileName);
     void initDefaultParams();
     void freeMemory();
     STATUS  ReadDataMatrix(const string &fileName,vector<vector<double>> &Data,int colNums);
@@ -69,7 +72,7 @@ public:
     svm_model *svmModel;
 
 private:
-      void (AiSVM::*task) ();
+      void (AiSVM::*task) ();  ///function pointer
 
 };
 

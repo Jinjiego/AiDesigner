@@ -1,5 +1,6 @@
 #include "AiSvm.h"
 
+
 void AiSVM::freeMemory()
 {
     if (svmModel)  svm_free_and_destroy_model(&svmModel);
@@ -14,7 +15,7 @@ void AiSVM::freeMemory()
 
 void  AiSVM:: train()
 {
-    if(trainningAble==0)     /// everything is ok then to run!
+    if(  (ModelStatus  & TRAINDATA_SET)  &&(ModelStatus  &  PARAM_SET )   )     /// everything is ok then to run!
           svmModel= svm_train(svmProb,svmParams);
     else
          emit ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,QString("Not Ready! ") ));
@@ -95,7 +96,7 @@ void AiSVM::predict()
 
 void AiSVM:: setTrainingData()
 {
-    if(trainingDataSetPath.size()>0)
+    if(trainingDataSetPath.size()>0)  //如果路径有效
     {
         if( !(ModelStatus & TRAINDATA_SET ) )
         {
@@ -126,7 +127,6 @@ STATUS AiSVM:: setTrainingData(string fileName)
             cout << "Error in opening file <" << fileName << ">. ABORT!";
             AiMsg msg(Error,MSG_TYPE_TEXT,INT_MIN,QString("Error in opening file <"+  QString::fromStdString(fileName)  +">. ABORT!")) ;
            emit ShowMsgRequest(msg);
-            ++trainningAble;
             return Error;
       }
        string line;
@@ -149,7 +149,6 @@ STATUS AiSVM:: setTrainingData(string fileName)
         {
             QString message ="The rows of file  <"+trainingDataSetPath+">  is less than 1! please check file .";
             ShowMsgRequest(AiMsg(Error,MSG_TYPE_TEXT,0,message) );
-             ++trainningAble;
              return Error;
         }
 
@@ -173,7 +172,9 @@ STATUS AiSVM:: setTrainingData(string fileName)
             svmProb->x[i][j].index = -1;//不知为何要多分配一个单元
             svmProb->y[i] = Data[i][j];
         }
-        ModelStatus=TRAINDATA_SET;
+
+
+        ModelStatus=ModelStatus | TRAINDATA_SET;
     return Ok;
 }
 void AiSVM::initDefaultParams()

@@ -5,10 +5,12 @@
 #include "QSci/qsciscintilla.h"
 #include "QSci/qscilexer.h"
 #include <QThread>
+#include <QTextEdit>
+
 #include <iostream>
 using namespace std;
 
-class TextDataWgt : public QsciScintilla,QThread
+class TextDataWgt : public   QsciScintilla,QThread
 {
 public:
     explicit TextDataWgt();

@@ -24,6 +24,13 @@ public:
         ShowStatus();
 
     }
+    ~RuningProgress(){
+        delete activatedProject;
+        delete MessageItem;
+        delete  progressItem;
+        delete  progressBar;
+    }
+
     void ShowStatus()
     {
          activatedProject->addChild(MessageItem);
@@ -33,9 +40,7 @@ public:
     void ClearStatus()
     {
 
-
     }
-
     void UapdateStatus(QString message,int progress)
     {
            MessageItem->setText(0,message);

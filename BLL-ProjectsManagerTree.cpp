@@ -82,12 +82,10 @@ void  BLLProjectsManagerTree::  WalkPath(QString PathRoot,TreeItem *TreeRoot )
                if( cur->childCount() >0 ) cur->setIcon(0,QIcon(":/res/Images/FolderOpen.png") );
 
            }
-
       }//for
 }
 
 TreeItem * BLLProjectsManagerTree::addChild(QTreeWidgetItem *parent,QString name,QIcon icon,myItemType isLeaf){
-
        TreeItem * Child=new TreeItem(parent, QStringList(name),isLeaf);
        Child->setIcon(0,icon);
        Child->setExpanded(true);
@@ -215,7 +213,7 @@ void BLLProjectsManagerTree:: deleteItem(){
 
       TreeItem * Item=(TreeItem *)currentItem();
        QString  path=myProjectDir+PathCur2Root( Item );
-      QString Text="<"+path+"> and its subitems  will be deleted permanently！ ";
+      QString Text="<"+path+"> and its subitems  will be deleted permanently!";
       QDir dir(path);
       if(Item->NodeType == Leaf)
       {
@@ -313,7 +311,7 @@ void  BLLProjectsManagerTree:: AddCsv(){
 
     TreeItem *seled= (TreeItem * )currentItem();
 
-    TreeItem * file = addChild(seled,QString("NewTxt.csv"),QIcon(),Leaf);
+    TreeItem * file = addChild(seled,QString("NewTxt.csv"),QIcon(":/res/Images/TextFileLogo.png"),Leaf);
 
     QFile newTxt(myProjectDir+PathCur2Root(file ));
 

@@ -43,7 +43,7 @@
 #include "Gui-colorswatch.h"
 #include "Gui-toolbar.h"
 #include "BLL-CentralShowTabWgt.h"
-
+#include "XGBoost/xgboosttest.h"
 #include <QAction>
 #include <QLayout>
 #include <QMenu>
@@ -67,7 +67,6 @@
 #include<QTreeWidget>
 #include <QMetaType>
 #include "svm/AiSvm.h"
-
 
 static const char * const message =
     "<p><b>Qt Main Window Example</b></p>"
@@ -95,14 +94,36 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
 {
 
      cout<< " The current object of type MainWindow is at " <<QThread::currentThreadId()<<endl;
-
+      //XGBoostDemo();
 
     LearnerList=new QList<LearnerUI*> ();
+     armadillo_testing();
+
+    //
+    Matrix<float> M(4,5);
+    for(int i=0;i<4;++i)
+        for(int j=0;j<5;++j)
+            M(i,j)=i*10+j;
+
+    cout<<M(1,2)<<endl;
+    Matrix<float> M2=M;
+
+    Matrix<float> M3= (M+M2-M).T();
+
+    for(int i=0;i<M3.rows;++i)
+    {
+        for(int j=0;j<M3.cols;++j)
+         {
+             cout<< M3(i,j)<<"\t";
+          }
+        cout<<endl;
+    }
+
 
     //★★★注册自定义类型,方可作为消息*****
-    qRegisterMetaType<AiMsg> ("AiMsg");
+    qRegisterMetaType<AiMsg> ("AiMsg"); // 注册自定义消息类型，否则信号槽不起作用
 
-    setObjectName("MainWindow");
+    setObjectName("MainWindow"); //
     setWindowTitle("MLDA");
 
 
@@ -126,8 +147,6 @@ MainWindow::MainWindow(const QMap<QString, QSize> &customSizeHints,
     connect(ProjectTreeViewer,SIGNAL(  ShowMsgRequest(QString,QString)) ,messagesManager,SLOT(  RecvAMessage(QString,QString))          );
 
     connect(CentralTabWidget,SIGNAL(   ShowMsgRequest(QString,QString)) ,messagesManager,SLOT(RecvAMessage(QString,QString))    );
-
-
     connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), messagesManager,SLOT(RecvAMessage( AiMsg )    ) );
     connect(libsvm::svm_Reportor,SIGNAL(ShowMsgRequest(AiMsg)), progressWgtManager,SLOT( RecvAMessage(AiMsg)  )   );
 
@@ -139,7 +158,6 @@ MainWindow::~MainWindow(){
      delete ProjectTreeViewer;   delete ProjectDockWidget;
      delete messagesManager; delete MessagesDockWidget;
      delete progressWgtManager;delete ProgressDockWidget;
-
 
 
 }
@@ -156,7 +174,6 @@ void MainWindow::setupASvmInstance()
 
         GuiLearner *bllsvmui=  new BLL_SVM_UI(nullptr,newSvm);
 
-
         connect(bllsvmui ,SIGNAL(ShowMsgRequest(AiMsg)),  messagesManager,SLOT(RecvAMessage( AiMsg )    )  );
         connect(bllsvmui , SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
         connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), bllsvmui ,SLOT(receive_trainingData(QString,  QStringList))   );
@@ -170,7 +187,7 @@ void MainWindow::setupASvmInstance()
         LearnerList->append(svm);
 
 
-        CentralTabWidget->add2TabList(TabData(bllsvmui ,TAB_GUI_LEARNER,"dgjio","SVM setup") );
+        CentralTabWidget->add2TabList(TabData(bllsvmui ,TAB_GUI_LEARNER,"5415gg4568fjg","svm setup") );
 
 
 }
@@ -335,6 +352,8 @@ void MainWindow::setMenuBarMachineLearning(){
 
     QAction *svmAct = BinaryClass->addAction(tr("Support Vector Machine"));
      connect(svmAct,SIGNAL(triggered(bool)),this,SLOT(setupASvmInstance() ) );
+    QAction  * xgboostAct=BinaryClass->addAction("XGBoost");
+    connect(xgboostAct,SIGNAL(triggered(bool)),this,SLOT(setupXGboostInstance()) );
 
     QAction *LogisticRegAct = BinaryClass->addAction(tr("Logistic Regression"));
 
@@ -343,8 +362,12 @@ void MainWindow::setMenuBarMachineLearning(){
 
     Action =MenuMachineLearning->addAction(tr("Cluster"));
 
-    Action =MenuMachineLearning->addAction(tr("Regression"));
+        //***************************************
+     QMenu *Regression =MenuMachineLearning->addMenu(tr("Regression"));
+     Regression->addAction(tr("XGBoost"));
 
+
+        //***************************************
     Action =MenuMachineLearning->addAction(tr("Relevant Recommendations"));
 
     Action =MenuMachineLearning->addAction(tr("Evaluation "));
@@ -352,6 +375,18 @@ void MainWindow::setMenuBarMachineLearning(){
      Action =MenuMachineLearning->addAction(tr("Prediction "));
 
 }
+void  MainWindow::setupXGboostInstance()
+{
+         BLL_XGBoost_UI * xgboost_ui=new BLL_XGBoost_UI();
+         connect(xgboost_ui , SIGNAL(getActivateProjectTreeLeafRequest(int) ) ,ProjectTreeViewer, SLOT( getActivateProjectTreeLeaf(int)  ));
+         connect( ProjectTreeViewer,SIGNAL(respondActivateProjectTreeLeaf(QString ,QStringList)), xgboost_ui ,SLOT(receive_trainingData(QString,  QStringList))   );
+
+         xgboost_ui->initDatasetItems(0);
+         CentralTabWidget->addTab(xgboost_ui,"XGBoost Model");
+
+
+}
+
 void  MainWindow:: NewProjectCommand()
 {
      ProjectTreeViewer->addProject("Test");
